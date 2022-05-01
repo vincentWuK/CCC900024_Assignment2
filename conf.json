@@ -1,0 +1,23 @@
+{
+    "apikey": "HrfRYhymphtDMrEhDdNa5kFU8",
+    "apisecret": "4jaIGUPfwpGSHz6cIXse4g1MljY1tFVdqTrLgLHToaIa5dkKOR",
+    "accesstoken": "1516266958232375299-uBLYr15LDOdK47XsPctWU7xPyPs1Lh",
+    "accesssecret": "l9bLNZkTQoO0AiUcZ4YwugZC4ZYdobumIyTSU13uYlepA",
+    "keywordsfile": {
+        "job": "keywords_job.txt",
+        "multiculture": "keywords_multiculture.txt"
+    },
+    "location": {
+        "adelaide": "138.44211992, -35.3489800609999, 138.755022665, -34.6525470049999",
+        "sydney": "150.5858542, -34.196521, 151.3515265, -33.3748485",
+        "melbourne": "144.588005432, -38.4338593059999, 145.520447024, -37.5112737229999",
+        "canberra": "148.995911617, -35.4802704169999, 149.233263997, -35.147689163",
+        "brisbane": "152.4688111, -27.9536501, 153.6399535, -27.0057918"
+    },
+    "server": "http://admin:admin@172.26.128.224:5984/",
+    "database": {
+        "job": "job",
+        "multiculture": "multiculture"
+    },
+    "languages": "en, fr, ja, zh, ar"
+}
