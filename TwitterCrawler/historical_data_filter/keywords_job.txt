@@ -1,0 +1,9 @@
+job
+work
+employee
+employer
+boss
+occupation
+career
+labour
+labor
