@@ -9,13 +9,17 @@ from concurrent.futures import ThreadPoolExecutor
 import subfinder
 import threading
 import numpy as np
+from langcodes import *
 
+NEED = [
+    "Carlton", "Docklands", "East Melbourne", "Kensington", "North Melbourne",
+    "Parkville", "Port Melbourne", "Southbank", "South Yarra",
+    "West Melbourne", "Melbourne"
+]
 FILENAME = "twitter-melb.json"
 # SERVERPATH = "http://admin:admin@172.26.128.224:5984/"
 SERVERPATH = "http://admin:admin@172.17.0.4:5984/"
 THREADSNUM = 4
-MULTICULTURELIMIT = 100000
-JOBLIMIT = 100000
 SERVER = couchdb.Server(SERVERPATH)
 DB_JOB = SERVER["job"]
 DB_MC = SERVER["multiculture"]
@@ -26,9 +30,9 @@ job_count = 0
 def Splitfile(size):
     with open(FILENAME, 'r', encoding='utf-8') as f:
         file_size = os.path.getsize(FILENAME)
-        chunk_estimated_size = file_size / (size * 2)
-        chunk_start = [0]
-        chunk_end = [0]
+        chunk_estimated_size = file_size / size
+        chunk_start = []
+        chunk_end = []
         f.readline()  # ignore the first line
         while (True):
             current_start = f.tell()
@@ -53,8 +57,14 @@ def FormatJson(line):
 
 
 def CalCenter(boundingbox):
-    lonlst = [boundingbox[0][0], boundingbox[1][0], boundingbox[2][0], boundingbox[3][0]]
-    latlst = [boundingbox[0][1], boundingbox[1][1], boundingbox[2][1], boundingbox[3][1]]
+    lonlst = [
+        boundingbox[0][0], boundingbox[1][0], boundingbox[2][0],
+        boundingbox[3][0]
+    ]
+    latlst = [
+        boundingbox[0][1], boundingbox[1][1], boundingbox[2][1],
+        boundingbox[3][1]
+    ]
     num_coords = 4
     X = 0.0
     Y = 0.0
@@ -97,7 +107,7 @@ def FindSuburb(coordinates, place, geofinder):
         try:
             location = geofinder.GetPlace(lat, long)
         except BaseException as e:
-            print("cannot use subfinder in bounding box", e)
+            # print("cannot use subfinder in bounding box", e)
             return None
         try:
             suburb = location["suburb"]
@@ -123,8 +133,12 @@ def analysis(p):
 
 def GetKeywords():
     f = open("keywords_job.txt")
-    wordlist = f.readlines()
-    return wordlist
+    wordlist_job = f.readlines()
+    f.close()
+    f = open("keywords_multiculture.txt")
+    wordlist_multiculture = f.readlines()
+    f.close()
+    return wordlist_job, wordlist_multiculture
 
 
 def HasKeywords(wordlist, text):
@@ -136,7 +150,7 @@ def HasKeywords(wordlist, text):
 
 def DeliverResult(my_chunk_start, my_chunk_end):
     global mc_count, job_count
-    wordlist_unemployment = GetKeywords()
+    wordlist_unemployment, wordlist_mc = GetKeywords()
     geofinder = subfinder.subfinder()
     with open(FILENAME, 'r', encoding='utf-8') as f:
         f.seek(my_chunk_start)
@@ -150,42 +164,38 @@ def DeliverResult(my_chunk_start, my_chunk_end):
             except BaseException as e:
                 continue
             suburb = FindSuburb(tweet["doc"]['coordinates'],
-                                tweet["doc"]['place'], geofinder)  # find the suburb
+                                tweet["doc"]['place'],
+                                geofinder)  # find the suburb
             text = jionlp.clean_text(tweet["doc"]['text'])  # clean the text
             mytextbolb = TextBlob(text)
             sentiment = analysis(mytextbolb)  # analyze sentiment
-            if tweet["doc"]['lang'] in ["en", "es"]:
-                lang = "en"
-            else:
-                lang = tweet["doc"]['lang']
-            if mc_count < MULTICULTURELIMIT and suburb:
-                try:
-                    DB_MC.save({
-                        '_id': str(tweet["id"]),
-                        'lang': lang,
-                        'suburb': suburb,
-                        'sentiment': sentiment,
-                        'created_at': tweet["doc"]["created_at"],
-                        'text': tweet["doc"]['text']
-                    })
-                    mc_count += 1
-                except BaseException as e:
-                    continue
-            if job_count < JOBLIMIT:
-                if HasKeywords(wordlist_unemployment, text):
+            lang = Language.make(language=tweet["doc"]["lang"]).display_name()
+            if suburb:
+                if suburb in NEED and HasKeywords(wordlist_mc, text):
                     try:
-                        DB_JOB.save({
+                        DB_MC.save({
                             '_id': str(tweet["id"]),
-                            'city': "melbourne",
+                            'lang': lang,
+                            'suburb': suburb,
                             'sentiment': sentiment,
                             'created_at': tweet["doc"]["created_at"],
                             'text': tweet["doc"]['text']
                         })
-                        job_count += 1
-                    except BaseException:
+                        mc_count += 1
+                    except BaseException as e:
                         continue
-            if (mc_count >= MULTICULTURELIMIT) and (job_count >= JOBLIMIT):
-                break
+            if HasKeywords(wordlist_unemployment, text):
+                try:
+                    DB_JOB.save({
+                        '_id': str(tweet["id"]),
+                        'city': "melbourne",
+                        'sentiment': sentiment,
+                        'created_at': tweet["doc"]["created_at"],
+                        'text': tweet["doc"]['text']
+                    })
+                    job_count += 1
+                except BaseException:
+                    continue
 
 
 if __name__ == "__main__":

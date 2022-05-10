@@ -32,9 +32,11 @@
 
 - [x] Write a program to analysis historical data.
 
-- [ ] improve the accuracy of suburb finder.
+- [x] Write programs to search 30 days and full-archive data
 
-- [ ] complete a machine learning model to classify tweets' texts.
+- [x] Improve the accuracy of suburb finder.
+
+- [ ] Complete a machine learning model to classify tweets' texts.
 
 ### Running Instructions
 
