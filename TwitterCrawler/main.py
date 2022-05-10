@@ -65,20 +65,22 @@ if __name__ == "__main__":
     if RANK == 0:
         with ThreadPoolExecutor(max_workers=3) as pool:
             try:
-                pool.submit(gettweetsstream, topic1, conf["city"][0], conf, 1,
-                            True)
-                pool.submit(gettweetsstream, topic2, conf["city"][1], conf, 1,
-                            False)
+                while(True):
+                    pool.submit(gettweetsstream, topic1, conf["city"][0], conf, 1,
+                                True)
+                    pool.submit(gettweetsstream, topic2, conf["city"][1], conf, 1,
+                                False)
             except BaseException as e:
                 print("Error: cannot start threads")
     else:
         with ThreadPoolExecutor(max_workers=2) as pool:
             try:
-                pool.submit(gettweetsstream, topic2, conf["city"][2], conf, 2,
-                            False)
-                pool.submit(gettweetsstream, topic2, conf["city"][3], conf, 2,
-                            False)
-                pool.submit(gettweetsstream, topic2, conf["city"][0], conf, 2,
-                            False)
+                while(True):
+                    pool.submit(gettweetsstream, topic2, conf["city"][2], conf, 2,
+                                False)
+                    pool.submit(gettweetsstream, topic2, conf["city"][3], conf, 2,
+                                False)
+                    pool.submit(gettweetsstream, topic2, conf["city"][0], conf, 2,
+                                False)
             except BaseException as e:
                 print("Error: cannot start threads")
