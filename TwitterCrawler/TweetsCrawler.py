@@ -10,7 +10,6 @@ import tweepy
 import numpy as np
 from langcodes import *
 
-
 NEED = [
     "Carlton", "Docklands", "East Melbourne", "Kensington", "North Melbourne",
     "Parkville", "Port Melbourne", "Southbank", "South Yarra",
@@ -141,7 +140,8 @@ class TweetsCrawler:
                     try:
                         text = jionlp.clean_text(tweet["text"])
                         sentiment = self.analysis(text)
-                        lang = Language.make(language=tweet["lang"]).display_name()
+                        lang = Language.make(
+                            language=tweet["lang"]).display_name()
                         try:
                             db.save({
                                 '_id': str(tweet["id"]),
@@ -165,7 +165,8 @@ class TweetsCrawler:
                             text = jionlp.clean_text(tweet["text"])
                             sentiment = self.analysis(text)
                             suburb = self.suburb
-                            lang = Language.make(language=tweet["lang"]).display_name()
+                            lang = Language.make(
+                                language=tweet["lang"]).display_name()
                             try:
                                 db.save({
                                     '_id': str(tweet["id"]),
@@ -189,8 +190,11 @@ class TweetsCrawler:
                         try:
                             text = jionlp.clean_text(tweet["text"])
                             sentiment = self.analysis(text)
-                            suburb = self.findsuburb(tweet["place"], tweet["coordinates"], geofinder)
-                            lang = Language.make(language=tweet["lang"]).display_name()
+                            suburb = self.findsuburb(tweet["place"],
+                                                     tweet["coordinates"],
+                                                     geofinder)
+                            lang = Language.make(
+                                language=tweet["lang"]).display_name()
                             if suburb not in NEED:
                                 try:
                                     db.save({
@@ -222,7 +226,7 @@ class TweetsCrawler:
         except Exception as e:
             print(e)
 
-    def SearchTweetsAll(self, suburb):
+    def SearchTweetsAll(self):
         auth = tweepy.OAuth2BearerHandler(self.bearer_token)
         api = tweepy.API(auth)
         wordlist = self.GetKeywords()
@@ -235,26 +239,31 @@ class TweetsCrawler:
                 query = query + " OR " + "\"" + word + "\""
             else:
                 query = "\"" + word + "\""
-            if len(query) > 200:
-                query = query + " place:" + suburb
+            if len(query) > 90:
+                query = query + " place:" + self.suburb
                 querylst.append(query)
                 query = ""
-        for q in querylst:
+        for index, q in enumerate(querylst):
             for i in range(1):  # search 100 tweets
                 try:
-                    lst = api.search_30_day(label="development", query=q, maxResults=100)
+                    lst = api.search_full_archive(label="development",
+                                                  query=q,
+                                                  maxResults=100,
+                                                  fromDate="202001010000",
+                                                  toDate="202101010000")
                 except BaseException as e:
-                    print("cannot search 30 days tweets: ", e)
+                    print("cannot search all days tweets: ", e)
                 for tweet in lst:
                     try:
                         text = jionlp.clean_text(tweet.text)
                         sentiment = self.analysis(text)
-                        lang = Language.make(language=tweet.lang).display_name()
+                        lang = Language.make(
+                            language=tweet.lang).display_name()
                         try:
                             db.save({
                                 '_id': str(tweet.id_str),
                                 'lang': lang,
-                                'suburb': suburb,
+                                'suburb': self.suburb,
                                 'sentiment': sentiment,
                                 'created_at': str(tweet.created_at),
                                 "text": tweet.text
@@ -264,7 +273,7 @@ class TweetsCrawler:
                     except BaseException as e:
                         print(e)
 
-    def Search30Days(self, suburb):
+    def Search30Days(self):
         auth = tweepy.OAuth2BearerHandler(self.bearer_token)
         api = tweepy.API(auth)
         wordlist = self.GetKeywords()
@@ -278,25 +287,28 @@ class TweetsCrawler:
             else:
                 query = "\"" + word + "\""
             if len(query) > 200:
-                query = query + " place:" + suburb
+                query = query + " place:" + self.suburb
                 querylst.append(query)
                 query = ""
         for q in querylst:
-            for i in range(1):  # search 100 tweets
+            for i in range(2):  # search 200 tweets
                 try:
-                    lst = api.search_30_day(label="development", query=q, maxResults=100)
+                    lst = api.search_30_day(label="development",
+                                            query=q,
+                                            maxResults=100)
                 except BaseException as e:
                     print("cannot search 30 days tweets: ", e)
                 for tweet in lst:
                     try:
                         text = jionlp.clean_text(tweet.text)
                         sentiment = self.analysis(text)
-                        lang = Language.make(language=tweet.lang).display_name()
+                        lang = Language.make(
+                            language=tweet.lang).display_name()
                         try:
                             db.save({
                                 '_id': str(tweet.id_str),
                                 'lang': lang,
-                                'suburb': suburb,
+                                'suburb': self.suburb,
                                 'sentiment': sentiment,
                                 'created_at': str(tweet.created_at),
                                 "text": tweet.text

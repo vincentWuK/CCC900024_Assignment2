@@ -23,7 +23,7 @@ def gettweetsstream(topic, city, conf, account_num, is_suburb):
     if is_suburb:
         suburbs = conf["suburb"]
         for suburb in suburbs:
-            name = suburb + " " + city
+            name = suburb + ", " + city
             try:
                 bbox = FindBBox(name)
             except BaseException as e:
