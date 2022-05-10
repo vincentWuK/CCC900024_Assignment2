@@ -222,8 +222,9 @@ class TweetsCrawler:
         except Exception as e:
             print(e)
 
-    def SearchTweetsAll(self):
-        t = Twarc(self.bearer_token)
+    def SearchTweetsAll(self, suburb):
+        auth = tweepy.OAuth2BearerHandler(self.bearer_token)
+        api = tweepy.API(auth)
         wordlist = self.GetKeywords()
         query = ""
         querylst = []
@@ -234,34 +235,34 @@ class TweetsCrawler:
                 query = query + " OR " + "\"" + word + "\""
             else:
                 query = "\"" + word + "\""
-            if len(query) > 100:
-                query = query + " place:" + self.location_name
+            if len(query) > 200:
+                query = query + " place:" + suburb
                 querylst.append(query)
                 query = ""
-        geofinder = subfinder.subfinder()
         for q in querylst:
-            for tweet in t.premium_search(q=q,
-                                          product="fullarchive",
-                                          environment="development",
-                                          max_results=500,
-                                          limit=1000,
-                                          from_date="2021-01-01"):
+            for i in range(1):  # search 100 tweets
                 try:
-                    text = jionlp.clean_text(tweet["text"])
-                    sentiment = self.analysis(text)
-                    lang = Language.make(language=tweet.lang).display_name()
-                    suburb = self.findsuburb(tweet["place"],
-                                             tweet["coordinates"], geofinder)
-                    db.save({
-                        '_id': str(tweet["id"]),
-                        'lang': lang,
-                        'suburb': suburb,
-                        'sentiment': sentiment,
-                        'created_at': tweet["created_at"],
-                        "text": tweet["text"]
-                    })
+                    lst = api.search_30_day(label="development", query=q, maxResults=100)
                 except BaseException as e:
-                    continue
+                    print("cannot search 30 days tweets: ", e)
+                for tweet in lst:
+                    try:
+                        text = jionlp.clean_text(tweet.text)
+                        sentiment = self.analysis(text)
+                        lang = Language.make(language=tweet.lang).display_name()
+                        try:
+                            db.save({
+                                '_id': str(tweet.id_str),
+                                'lang': lang,
+                                'suburb': suburb,
+                                'sentiment': sentiment,
+                                'created_at': str(tweet.created_at),
+                                "text": tweet.text
+                            })
+                        except BaseException as e:
+                            pass
+                    except BaseException as e:
+                        print(e)
 
     def Search30Days(self, suburb):
         auth = tweepy.OAuth2BearerHandler(self.bearer_token)
@@ -270,7 +271,7 @@ class TweetsCrawler:
         query = ""
         querylst = []
         server = couchdb.Server(self.server_path)
-        db = server["multiculture_hasgeo"]
+        db = server[self.database_name]
         for word in wordlist:
             if query:
                 query = query + " OR " + "\"" + word + "\""
@@ -280,7 +281,6 @@ class TweetsCrawler:
                 query = query + " place:" + suburb
                 querylst.append(query)
                 query = ""
-        geofinder = subfinder.subfinder()
         for q in querylst:
             for i in range(1):  # search 100 tweets
                 try:
