@@ -3,3 +3,11 @@ jionlp
 CouchDB
 mpi4py
 twarc
+tweepy
+langcodes
+numpy
+language_data
+geopandas
+osmnx
+reverse-geocoder
+subfinder-vvvin
