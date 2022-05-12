@@ -34,13 +34,7 @@ def gettweetsstream(topic, city, conf, account_num, is_suburb):
                                    [city, suburb, bbox], conf["server"],
                                    conf["database"][topic])
             worker.GetTweetsStream()
-        bbox = FindBBox(city)
-        new_dbname = conf["database"][topic] + "_nosub"
-        worker = TweetsCrawler(apikey, apisecret, accesstoken, accesssecret,
-                               bearer_token, conf["keywordsfile"][topic],
-                               [city, "no", bbox], conf["server"],
-                               new_dbname)
-        worker.GetTweetsStream()
+            time.sleep(60 * 5)
     else:
         bbox = FindBBox(city)
         worker = TweetsCrawler(apikey, apisecret, accesstoken, accesssecret,
@@ -63,24 +57,22 @@ if __name__ == "__main__":
     f = open(configfilepath, 'r')
     conf = json.load(f)  # dict
     if RANK == 0:
-        with ThreadPoolExecutor(max_workers=3) as pool:
+        with ThreadPoolExecutor(max_workers=2) as pool:
             try:
-                while(True):
-                    pool.submit(gettweetsstream, topic1, conf["city"][0], conf, 1,
-                                True)
-                    pool.submit(gettweetsstream, topic2, conf["city"][1], conf, 1,
-                                False)
+                pool.submit(gettweetsstream, topic1, conf["city"][0], conf, 1,
+                            True)
+                pool.submit(gettweetsstream, topic2, conf["city"][1], conf, 1,
+                            False)
             except BaseException as e:
                 print("Error: cannot start threads")
     else:
         with ThreadPoolExecutor(max_workers=2) as pool:
             try:
-                while(True):
-                    pool.submit(gettweetsstream, topic2, conf["city"][2], conf, 2,
-                                False)
-                    pool.submit(gettweetsstream, topic2, conf["city"][3], conf, 2,
-                                False)
-                    pool.submit(gettweetsstream, topic2, conf["city"][0], conf, 2,
-                                False)
+                pool.submit(gettweetsstream, topic2, conf["city"][2], conf, 2,
+                            False)
+                pool.submit(gettweetsstream, topic2, conf["city"][3], conf, 2,
+                            False)
+                pool.submit(gettweetsstream, topic2, conf["city"][0], conf, 2,
+                            False)
             except BaseException as e:
                 print("Error: cannot start threads")

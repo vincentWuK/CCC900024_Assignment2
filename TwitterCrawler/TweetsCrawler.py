@@ -129,102 +129,65 @@ class TweetsCrawler:
         try:
             server = couchdb.Server(self.server_path)
             db = server[self.database_name]
-            count_stream = 0
-            geofinder = subfinder.subfinder()
-            if not self.suburb:
+        except BaseException as e:
+            print("server init error: ", e)
+        count_stream = 0
+        if not self.suburb:
+            for tweet in self.stream.filter(track=wordlist,
+                                            locations=self.location):
+                count_stream += 1
+                if count_stream > 50000:  # get 50000 datas then quit
+                    break
+                try:
+                    text = jionlp.clean_text(tweet["text"])
+                    sentiment = self.analysis(text)
+                    lang = Language.make(
+                        language=tweet["lang"]).display_name()
+                    try:
+                        db.save({
+                            '_id': str(tweet["id"]),
+                            'city': self.location_name,
+                            'sentiment': sentiment,
+                            'created_at': tweet["created_at"],
+                            'text': tweet["text"]
+                        })
+                    except BaseException:
+                        pass
+                except BaseException:
+                    continue
+        else:  # suburb mode
+            try:
+                conflict = 0
                 for tweet in self.stream.filter(track=wordlist,
                                                 locations=self.location):
                     count_stream += 1
-                    if count_stream > 50000:  # get 50000 datas then quit
+                    if count_stream > 10000:  # get 10000 tweets then exit
                         break
                     try:
                         text = jionlp.clean_text(tweet["text"])
                         sentiment = self.analysis(text)
-                        lang = Language.make(
-                            language=tweet["lang"]).display_name()
-                        try:
-                            db.save({
-                                '_id': str(tweet["id"]),
-                                'city': self.location_name,
-                                'sentiment': sentiment,
-                                'created_at': tweet["created_at"],
-                                'text': tweet["text"]
-                            })
-                        except BaseException:
-                            pass
                     except BaseException:
+                        print("cannot get text")
                         continue
-            else:  # suburb mode
-                if self.suburb != "no":
-                    for tweet in self.stream.filter(track=wordlist,
-                                                    locations=self.location):
-                        count_stream += 1
-                        if count_stream > 10000:  # get 10000 tweets then exit
-                            break
-                        try:
-                            text = jionlp.clean_text(tweet["text"])
-                            sentiment = self.analysis(text)
-                            suburb = self.suburb
-                            lang = Language.make(
-                                language=tweet["lang"]).display_name()
-                            try:
-                                db.save({
-                                    '_id': str(tweet["id"]),
-                                    'lang': lang,
-                                    'suburb': suburb,
-                                    'sentiment': sentiment,
-                                    'created_at': tweet["created_at"],
-                                    "text": tweet["text"]
-                                })
-                            except BaseException as e:
-                                pass
-                        except BaseException as e:
-                            print(e)
-                            pass
-                else:
-                    for tweet in self.stream.filter(track=wordlist,
-                                                    locations=self.location):
-                        count_stream += 1
-                        if count_stream > 10000:  # get 10000 tweets then exit
-                            break
-                        try:
-                            text = jionlp.clean_text(tweet["text"])
-                            sentiment = self.analysis(text)
-                            suburb = self.findsuburb(tweet["place"],
-                                                     tweet["coordinates"],
-                                                     geofinder)
-                            lang = Language.make(
-                                language=tweet["lang"]).display_name()
-                            if suburb not in NEED:
-                                try:
-                                    db.save({
-                                        '_id': str(tweet["id"]),
-                                        'lang': lang,
-                                        'suburb': suburb,
-                                        'sentiment': sentiment,
-                                        'created_at': tweet["created_at"],
-                                        "text": tweet["text"]
-                                    })
-                                except BaseException as e:
-                                    pass
-                            else:
-                                db2 = server["multiculture"]
-                                try:
-                                    db2.save({
-                                        '_id': str(tweet["id"]),
-                                        'lang': lang,
-                                        'suburb': suburb,
-                                        'sentiment': sentiment,
-                                        'created_at': tweet["created_at"],
-                                        "text": tweet["text"]
-                                    })
-                                except BaseException as e:
-                                    pass
-                        except BaseException as e:
-                            print(e)
-                            pass
-        except Exception as e:
-            print(e)
+                    suburb = self.suburb
+                    lang = Language.make(language=tweet["lang"]).display_name()
+                    try:
+                        db.save({
+                            '_id': str(tweet["id"]),
+                            'lang': lang,
+                            'suburb': suburb,
+                            'sentiment': sentiment,
+                            'created_at': tweet["created_at"],
+                            'text': tweet["text"]
+                        })
+                    except BaseException as e:
+                        print("cannot store db: ", e)
+                        conflict += 1
+                        pass
+                # print(conflict)
+            except BaseException as e:
+                print("cannot filter: ", e)
+                pass
 
     def SearchTweetsAll(self):
         auth = tweepy.OAuth2BearerHandler(self.bearer_token)
