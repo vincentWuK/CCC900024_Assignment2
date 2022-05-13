@@ -22,8 +22,7 @@ if __name__ == "__main__":
     for opt, arg in opts:
         if opt in ['-c']:
             configfilepath = arg
-
-    f = open("conf.json", 'r')
+    f = open(configfilepath, 'r')
     conf = json.load(f)  # dict
     apikey = conf["apikey"]
     apisecret = conf["apisecret"]
