@@ -81,7 +81,7 @@ function T1_GA() {
       <Layout>
         <Header style={{padding:10, textAlign: 'center'}}>
           <Space direction="vertical">
-            <Title level={3} style = {{color:'white'}}>{available(t1Test) ? JSON.stringify(t1Test) : String(t1Test)}</Title>
+            <Title level={3} style = {{color:'white'}}>{<span>CCC assignment Group 11</span>}</Title>
           </Space>  
         </Header>
       </Layout>

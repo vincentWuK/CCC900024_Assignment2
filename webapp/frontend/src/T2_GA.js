@@ -159,7 +159,7 @@ function T2_GA() {
               Dashboard
             </Menu.Item>
             <SubMenu
-              title={<span>Unemployment Analysis</span>}>
+              title={<span> AURIN Unemployment Analysis</span>}>
               <Menu.ItemGroup>
                 <Menu.Item>
                   <Space direction="vertical" size={12}>
@@ -183,7 +183,7 @@ function T2_GA() {
                 </Menu.Item>
                 <Menu.Item>
                   <Button type="link" style={{ marginLeft: "-10px" }} onClick={() => { navigate('/T2o') }}>
-                    Topic 2 Unemployment Overview
+                    Topic 2 AURIN Unemployment Overview
                   </Button>
                 </Menu.Item>
               </Menu.ItemGroup>
