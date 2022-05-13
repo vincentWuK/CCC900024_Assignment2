@@ -1,13 +1,11 @@
 # use python 3 image
-FROM python:3
+FROM ubuntu:18.04
 
+RUN apt-get update -y
+RUN apt-get install -y python-pip python-dev build-essential
+RUN apt-get install libopenmpi-dev
 # create a work directory
 WORKDIR /crawler
-
-RUN su -
-RUN apt-get install sudo -y
-RUN usermod -aG sudo ubuntu
-RUN sudo apt-get install libopenmpi-dev
 
 # setup requirement for backend
 COPY ./requirements.txt .
