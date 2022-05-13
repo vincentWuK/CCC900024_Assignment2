@@ -1,5 +1,5 @@
 export const request_sentiment_analysis = (dates) => {
-    return fetch(`/Sentiment_Analysis?from_date=${encodeURIComponent(dates.from_date)}&to_date=${encodeURIComponent(dates.to_date)}&suburb=Carlton,Dockerland,Melbourne&lan=en,ja,in`, {
+    return fetch(`/Sentiment_Analysis?from_date=${encodeURIComponent(dates.from_date)}&to_date=${encodeURIComponent(dates.to_date)}&suburb=Melbourne,Carlton,Docklands,East Melbourne,Kensington,North Melbourne,Parkville,Port Melbourne,Southbank,South Yarra,West Melbourne&lan=en,ja,in`, {
         method: 'GET',
       }).then(response => {                                  
         return response.json()
@@ -7,7 +7,7 @@ export const request_sentiment_analysis = (dates) => {
 };
 
 export const request_tweets_proportion = (dates) => {
-  return fetch(`/total_tweets_proportion?from_date=${encodeURIComponent(dates.from_date)}&to_date=${encodeURIComponent(dates.to_date)}&suburb=Carlton,Dockerland,Melbourne&lan=en,ja,in`, {
+  return fetch(`/total_tweets_proportion?from_date=${encodeURIComponent(dates.from_date)}&to_date=${encodeURIComponent(dates.to_date)}&suburb=Melbourne,Carlton,Docklands,East Melbourne,Kensington,North Melbourne,Parkville,Port Melbourne,Southbank,South Yarra,West Melbourne&lan=en,ja,in`, {
     method: 'GET', 
   }).then(response => {
     return response.json()
@@ -15,7 +15,7 @@ export const request_tweets_proportion = (dates) => {
 }
 
 export const request_daily_Analysis = (dates) => {
-  return fetch(`/daily_Analysis?from_date=${encodeURIComponent(dates.from_date)}&to_date=${encodeURIComponent(dates.to_date)}&suburb=Carlton,Dockerland,Melbourne&lan=en,ja,in`, {
+  return fetch(`/daily_Analysis?from_date=${encodeURIComponent(dates.from_date)}&to_date=${encodeURIComponent(dates.to_date)}&suburb=Melbourne,Carlton,Docklands,East Melbourne,Kensington,North Melbourne,Parkville,Port Melbourne,Southbank,South Yarra,West Melbourne&lan=en,ja,in`, {
     method: 'GET', 
   }).then(response => {
     return response.json()
@@ -23,7 +23,7 @@ export const request_daily_Analysis = (dates) => {
 }
 
 export const request_daily_sent_city = (dates) => {
-  return fetch(`/daily_sent_city?from_date=${encodeURIComponent(dates.from_date)}&to_date=${encodeURIComponent(dates.to_date)}`, {
+  return fetch(`/daily_sent_city?from_date=${encodeURIComponent(dates.from_date)}&to_date=${encodeURIComponent(dates.to_date)}&city=Sydney,Melbourne,Brisbane,Adelaide&lan=en,ja,in`, {
     method: 'GET', 
   }).then(response => {
     return response.json()
@@ -31,7 +31,7 @@ export const request_daily_sent_city = (dates) => {
 }
 
 export const request_sent_city = (dates) => {
-  return fetch(`/sent_city?from_date=${encodeURIComponent(dates.from_date)}&to_date=${encodeURIComponent(dates.to_date)}`, {
+  return fetch(`/sent_city?from_date=${encodeURIComponent(dates.from_date)}&to_date=${encodeURIComponent(dates.to_date)}&city=Sydney,Melbourne,Brisbane,Adelaide&lan=en,ja,in`, {
     method: 'GET', 
   }).then(response => {
     return response.json()
