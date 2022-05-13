@@ -60,7 +60,7 @@ class Daily_Analysis(Resource):
         to_date = request.args.get('to_date')
         request_suburb = request.args.get('suburb')
         request_lan = request.args.get('lan')
-        result = cal_specific_day_in_the_suburb_speak_lan_with_every_sent(from_date, to_date, request_lan, request_suburb)
+        result = cal_specific_day_in_the_suburb_speak_lan_with_every_sent(from_date, to_date)
         resp = jsonify(result)
         resp.status_code = 200
         return resp
