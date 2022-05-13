@@ -26,7 +26,7 @@ function T2_GA() {
   }
 
   function submit(e) {
-    request_daily_sent_city(homeDates).then((response) => setT2Test(response))
+    request_daily_sent_city(t2Date).then((response) => setT2Test(response))
   }
   function employ(data1, data2) {
     var employ2020 = []

@@ -30,7 +30,7 @@ function T2o() {
   }
   
   function submit(e) {
-    request_sent_city(homeDates).then((response) => setMoodCityTest(response))
+    request_sent_city(t2oDates).then((response) => setMoodCityTest(response))
   }
 
 

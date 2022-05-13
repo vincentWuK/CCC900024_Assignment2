@@ -25,7 +25,7 @@ function T1_GA() {
   }
 
   function submit(e) {
-    request_sentiment_analysis(homeDates).then((response) => setT1Test(response))
+    request_sentiment_analysis(t1Date).then((response) => setT1Test(response))
   }
   
   const [t1Test, setT1Test] = useState({})
