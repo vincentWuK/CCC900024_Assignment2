@@ -37,6 +37,7 @@ def gettweetcity(topic, conf, account_num):
                                [c, None, bbox], conf["server"],
                                conf["database"][topic])
         worker.GetTweetsStream()
+        time.sleep(60 * 5)
 
 
 def gettweetsuburb(topic, city, conf, account_num):
@@ -73,13 +74,13 @@ if __name__ == "__main__":
     f = open(configfilepath, 'r')
     conf = json.load(f)  # dict
     if RANK == 0:
-        with ThreadPoolExecutor(max_workers=1) as pool:
+        with ThreadPoolExecutor(max_workers=2) as pool:
             try:
                 pool.submit(gettweetsstream, topic1, conf, 1, True)
             except BaseException as e:
                 print("Error: cannot start threads")
     else:
-        with ThreadPoolExecutor(max_workers=1) as pool:
+        with ThreadPoolExecutor(max_workers=2) as pool:
             try:
                 pool.submit(gettweetsstream, topic2, conf, 2, False)
             except BaseException as e:
