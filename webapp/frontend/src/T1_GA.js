@@ -73,6 +73,7 @@ function T1_GA() {
     const selectSuburbs = (`${value}`).split(',');
     setSelectSuburb(selectSuburbs)
     console.log(selectSuburbs)
+    setT1Test(t1Test)
   }
 
   return (
@@ -80,7 +81,7 @@ function T1_GA() {
       <Layout>
         <Header style={{padding:10, textAlign: 'center'}}>
           <Space direction="vertical">
-            <Title level={3} style = {{color:'white'}}>{t1Test}</Title>
+            <Title level={3} style = {{color:'white'}}>{available(t1Test) ? JSON.stringify(t1Test) : String(t1Test)}</Title>
           </Space>  
         </Header>
       </Layout>

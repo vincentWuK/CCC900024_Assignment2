@@ -230,7 +230,7 @@ function HomePage() {
                 Dashboard
               </Menu.Item>
 
-              <SubMenu title = { JSON.stringify(moodTest) }>
+              <SubMenu title = { <span>Topic 1: Multi Culture Overview</span> }>
 
 
                  <Menu.Item>
