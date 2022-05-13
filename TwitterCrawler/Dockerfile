@@ -25,4 +25,4 @@ RUN python3 -m textblob.download_corpora
 COPY . .
 
 # run cmd
-CMD [ "python", "main.py" ]
+CMD [ "mpirun", "-n" "2" "python3" "main.py" "-c" '"conf.json\"' ]
