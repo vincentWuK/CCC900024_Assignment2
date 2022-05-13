@@ -4,6 +4,9 @@ FROM python:3
 # create a work directory
 WORKDIR /crawler
 
+RUN su -
+RUN apt-get install sudo -y
+RUN usermod -aG sudo ubuntu
 RUN sudo apt-get install libopenmpi-dev
 
 # setup requirement for backend
