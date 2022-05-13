@@ -1,13 +1,16 @@
 # use python 3 image
-FROM ubuntu:18.04
+FROM ubuntu:latest
 
-RUN apt-get update -y
-RUN apt-get install -y python-pip python-dev build-essential
+ENV DEBIAN_FRONTEND=noninteractive
+
+RUN apt-get update \
+  && apt-get install -y python3-pip python3-dev \
+  && cd /usr/local/bin \
+  && ln -s /usr/bin/python3 python \
+  && pip3 install --upgrade pip
+
 RUN yes | apt-get install libopenmpi-dev
 RUN yes | apt install mpich
-RUN pip install -U pip
-RUN pip install -U textblob
-RUN python -m textblob.download_corpora
 # create a work directory
 WORKDIR /crawler
 
@@ -15,6 +18,8 @@ WORKDIR /crawler
 COPY ./requirements.txt .
 
 RUN pip install -r requirements.txt
+
+RUN python3 -m textblob.download_corpora
 
 # copy all source file for backend
 COPY . .
