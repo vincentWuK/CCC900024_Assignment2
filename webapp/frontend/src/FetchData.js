@@ -15,7 +15,7 @@ export const request_tweets_proportion = (dates) => {
 }
 
 export const request_daily_Analysis = (dates) => {
-  return fetch(`/daily_Analysis?from_date=${encodeURIComponent(dates.from_date)}&to_date=${encodeURIComponent(dates.to_date)}`, {
+  return fetch(`/daily_Analysis?from_date=${encodeURIComponent(dates.from_date)}&to_date=${encodeURIComponent(dates.to_date)}&suburb=Carlton,Dockerland,Melbourne&lan=en,ja,in`, {
     method: 'GET', 
   }).then(response => {
     return response.json()
