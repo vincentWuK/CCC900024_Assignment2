@@ -2,4 +2,4 @@ ijson
 jionlp
 CouchDB
 mpi4py
-twarc
+twarc=2.10.4
