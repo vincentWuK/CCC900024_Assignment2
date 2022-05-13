@@ -181,11 +181,6 @@ function T2o() {
                       Topic 2 Graph Analysis
                     </Button>
                   </Menu.Item>
-                  <Menu.Item>
-                    <Button type="link" style={{marginLeft: "40px"}} onClick={() => {navigate('/Others') }}>
-                      -- Others  -- 
-                    </Button>
-                  </Menu.Item>
                 </Menu.ItemGroup>
               </SubMenu>
             </Menu>

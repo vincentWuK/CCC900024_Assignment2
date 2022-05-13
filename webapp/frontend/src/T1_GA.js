@@ -6,7 +6,7 @@ import './App.css';
 import SubMenu from 'antd/lib/menu/SubMenu';
 import Chart from 'react-google-charts';
 import { available } from './Util';
-import { request_daily_sent_city, request_sentiment_analysis } from './FetchData';
+import { request_daily_sent_city, request_sentiment_analysis, request_sent_city } from './FetchData';
 
 const { Header, Footer, Sider, Content } = Layout;
 const { Title } = Typography;
@@ -25,7 +25,7 @@ function T1_GA() {
   }
 
   function submit(e) {
-    request_daily_sent_city(t1Date).then((response) => setT1Test(response))
+    request_sent_city(t1Date).then((response) => setT1Test(response))
   }
   
   const [t1Test, setT1Test] = useState({})
@@ -130,11 +130,6 @@ function T1_GA() {
                   <Menu.Item>
                     <Button type="link" style={{marginLeft: "10px"}} onClick={() => {navigate('/T2_GA') }}>
                       Topic 2 Graph Analysis
-                    </Button>
-                  </Menu.Item>
-                  <Menu.Item>
-                    <Button type="link" style={{marginLeft: "40px"}} onClick={() => {navigate('/Others') }}>
-                      -- Others  -- 
                     </Button>
                   </Menu.Item>
                 </Menu.ItemGroup>
