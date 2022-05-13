@@ -5,6 +5,7 @@ RUN apt-get update -y
 RUN apt-get install -y python-pip python-dev build-essential
 RUN yes | apt-get install libopenmpi-dev
 RUN yes | apt install mpich
+RUN pip install -U pip
 RUN pip install -U textblob
 RUN python -m textblob.download_corpora
 # create a work directory
