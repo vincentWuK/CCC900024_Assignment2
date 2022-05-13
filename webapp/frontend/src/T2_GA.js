@@ -1,10 +1,13 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import { Layout, Typography, Space, Menu, Breadcrumb, Select, DatePicker, Button } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import './App.css';
 import SubMenu from 'antd/lib/menu/SubMenu';
 import Chart from 'react-google-charts';
+import file2020 from './dese_gcc_summary_data_dec_2020-1574662667975838006.json';
+import file2021 from './dese_gccsa_summary_data_dec_2021-5538471449058000739.json';
 import { available } from './Util';
+import { request_daily_sent_city } from './FetchData';
 
 const { Header, Footer, Sider, Content } = Layout;
 const { Title } = Typography;
@@ -14,18 +17,72 @@ function T2_GA() {
 
   let navigate = useNavigate();
 
-  const [t2Date, setT2Date] = useState({from_date:'', to_date:''});
+  const [t2Date, setT2Date] = useState({ from_date: '', to_date: '' });
   function onChange(t2Dates, t2DateStrings) {
-    const newT2Dates = {...t2Dates}
+    const newT2Dates = { ...t2Dates }
     newT2Dates['from_date'] = t2DateStrings[0]
     newT2Dates['to_date'] = t2DateStrings[1]
     setT2Date(newT2Dates)
   }
 
   function submit(e) {
-    // TO DO
+    request_daily_sent_city(homeDates).then((response) => setT2Test(response))
+  }
+  function employ(data1, data2) {
+    var employ2020 = []
+    var employ2021 = []
+    for (const i in data1.features) {
+      employ2020.push(parseFloat(data1.features[i].properties.mpy_rt_15_64))
+    }
+    for (const j in data2.features) {
+      employ2021.push(parseFloat(data2.features[j].properties.mpy_rt_15_64))
+    }
+
+    var empRate = []
+    empRate.push(["year", "Sydney", "Melbourne", "Brisbane", "Adelaide"])
+    empRate.push(['2020', employ2020[0], employ2020[1], employ2020[2], employ2020[3]])
+    empRate.push(['2021', employ2021[0], employ2021[1], employ2021[2], employ2021[3]])
+    return empRate
   }
 
+  function unEmploy(data1, data2) {
+    var unEmp2020 = []
+    var unEmp2021 = []
+    for (const i in data1.features) {
+      unEmp2020.push(parseFloat(data1.features[i].properties.unemp_rt_15))
+    }
+    for (const j in data2.features) {
+      unEmp2021.push(parseFloat(data2.features[j].properties.unemp_rt_15))
+    }
+
+    var unEmpRate = []
+    unEmpRate.push(["year", "Sydney", "Melbourne", "Brisbane", "Adelaide"])
+    unEmpRate.push(['2020', unEmp2020[0], unEmp2020[1], unEmp2020[2], unEmp2020[3]])
+    unEmpRate.push(['2021', unEmp2021[0], unEmp2021[1], unEmp2021[2], unEmp2021[3]])
+    return unEmpRate
+  }
+
+  function allEmploy(data1, data2) {
+    var employ2020 = []
+    var employ2021 = []
+    var unEmp2020 = []
+    var unEmp2021 = []
+    for (const i in data1.features) {
+      employ2020.push(parseFloat(data1.features[i].properties.mpy_rt_15_64))
+      unEmp2020.push(parseFloat(data1.features[i].properties.unemp_rt_15))
+    }
+    for (const j in data2.features) {
+      employ2021.push(parseFloat(data2.features[j].properties.mpy_rt_15_64))
+      unEmp2021.push(parseFloat(data2.features[j].properties.unemp_rt_15))
+    }
+
+    var allRate = []
+    allRate.push(["year", "Sydney Employ", "Sydney Unemploy", "Melbourne Employ", "Melbourne Unemploy",
+      "Brisbane Employ", "Brisbane Unemploy", "Adelaide Employ", "Adelaide Unemploy"])
+    allRate.push(['2020', employ2020[0], unEmp2020[0], employ2020[1], unEmp2020[1], employ2020[2], unEmp2020[2], employ2020[3], unEmp2020[3]])
+    allRate.push(['2021', employ2021[0], unEmp2021[0], employ2021[1], unEmp2021[1], employ2021[2], unEmp2021[2], employ2021[3], unEmp2021[3]])
+    return allRate
+  }
   const [t2Test, setT2Test] = useState({})
 
   function generateOptions(title, subtitle) {
@@ -37,16 +94,24 @@ function T2_GA() {
     }
   }
 
+  function empOption(title) {
+    return {
+      chart: {
+        title: title + " Changes between 2020 and 2021",
+      },
+    }
+  }
+
   function t2List(cityMood) {
     var table = []
     table.push(["date", "very positive", "positive", "neutral", "negative", "very negative"])
     var dates = []
     var temp_key = Object.keys(cityMood)[0]
-    
+
     for (const i in cityMood[temp_key]) {
       dates.push(cityMood[temp_key][i].date)
     }
-  
+
     var moods = ["very positive", "positive", "neutral", "negative", "very negative"]
 
     for (const i in dates) {
@@ -77,10 +142,10 @@ function T2_GA() {
   return (
     <div className="Plot1">
       <Layout>
-        <Header style={{padding:10, textAlign: 'center'}}>
+        <Header style={{ padding: 10, textAlign: 'center' }}>
           <Space direction="vertical">
-            <Title level={3} style = {{color:'white'}}>CCC assignment Group 11</Title>
-          </Space>  
+            <Title level={3} style={{ color: 'white' }}>CCC assignment Group 11</Title>
+          </Space>
         </Header>
       </Layout>
       <Layout>
@@ -90,80 +155,55 @@ function T2_GA() {
             defaultSelectedKeys={['1']}
             defaultOpenKeys={['sub1']}
             style={{ height: '100%', borderRight: 0, width: '150%' }}>
-              <Menu.Item key = 'Dashborad'>
-                Dashboard
-              </Menu.Item>
-              <SubMenu
-                title = {<span>Unemployment Analysis</span>}>
-                <Menu.ItemGroup>
-
-                  {/* <Menu.Item style={{ height: '50%'}}>
-                    <Select
-                      mode='multiple'
-                      showSearch
-                      placeholder="Select Age Groups"
-                      optionFilterProp="children"
-                      style={{ width: '100%' }}
-                    >
-                      <Select value="<10">Less than 10</Select>
-                      <Select value="10-15">10-15</Select>
-                      <Select value="15-20">15-20</Select>
-                      <Select value="20-25">20-25</Select>
-                      <Select value="25-30">25-30</Select>
-                      <Select value="35-40">35-40</Select>
-                      <Select value="45-50">45-50</Select>
-                      <Select value="55-60">55-60</Select>
-                      <Select value="65-70">65-70</Select>
-                      <Select value="75-80">75-80</Select>
-                      <Select value="80+">80+</Select>
-                    </Select>
-                  </Menu.Item> */}
-
-                  <Menu.Item>
-                    <Space direction="vertical" size={12}>
-                      <RangePicker />
-                    </Space>
-                  </Menu.Item>
-
-                  <Button onClick={submit} type="primary" style={{marginLeft: "115px"}}>Submit</Button>
-            
-                </Menu.ItemGroup>
-              </SubMenu>
-              <SubMenu title = {<span>Related Pages</span>}>
-                <Menu.ItemGroup>
-                  <Menu.Item>
-                    <Button type="link" style={{marginLeft: "35px"}} onClick={() => {navigate('/') }}>
-                      -- Home Page --
-                    </Button>
-                  </Menu.Item>
-                  <Menu.Item>
-                    <Button type="link" style={{marginLeft: "10px"}} onClick={() => {navigate('/T1_GA') }}>
-                      Topic 1 Graph Analysis
-                    </Button>
-                  </Menu.Item>
-                  <Menu.Item>
-                    <Button type="link" style={{marginLeft: "-10px"}} onClick={() => {navigate('/T2o') }}>
-                      Topic 2 Unemployment Overview
-                    </Button>
-                  </Menu.Item>
-                  <Menu.Item>
-                    <Button type="link" style={{marginLeft: "40px"}} onClick={() => {navigate('/Others') }}>
-                      -- Others  -- 
-                    </Button>
-                  </Menu.Item>
-                </Menu.ItemGroup>
-              </SubMenu>
+            <Menu.Item key='Dashborad'>
+              Dashboard
+            </Menu.Item>
+            <SubMenu
+              title={<span>Unemployment Analysis</span>}>
+              <Menu.ItemGroup>
+                <Menu.Item>
+                  <Space direction="vertical" size={12}>
+                    <RangePicker />
+                  </Space>
+                </Menu.Item>
+                <Button onClick={submit} type="primary" style={{ marginLeft: "115px" }}>Submit</Button>
+              </Menu.ItemGroup>
+            </SubMenu>
+            <SubMenu title={<span>Related Pages</span>}>
+              <Menu.ItemGroup>
+                <Menu.Item>
+                  <Button type="link" style={{ marginLeft: "35px" }} onClick={() => { navigate('/') }}>
+                    -- Home Page --
+                  </Button>
+                </Menu.Item>
+                <Menu.Item>
+                  <Button type="link" style={{ marginLeft: "10px" }} onClick={() => { navigate('/T1_GA') }}>
+                    Topic 1 Graph Analysis
+                  </Button>
+                </Menu.Item>
+                <Menu.Item>
+                  <Button type="link" style={{ marginLeft: "-10px" }} onClick={() => { navigate('/T2o') }}>
+                    Topic 2 Unemployment Overview
+                  </Button>
+                </Menu.Item>
+                <Menu.Item>
+                  <Button type="link" style={{ marginLeft: "40px" }} onClick={() => { navigate('/Others') }}>
+                    -- Others  --
+                  </Button>
+                </Menu.Item>
+              </Menu.ItemGroup>
+            </SubMenu>
           </Menu>
         </Sider>
 
         <Layout>
-          <Content style={{ padding: 90, minHeight: 500, marginTop: -105  }}>           
+          <Content style={{ padding: 90, minHeight: 500, marginTop: -105 }}>
             <Breadcrumb style={{ margin: '16px' }}>
               <div style={{ padding: 24, minHeight: 450 }}>
                 <Select
                   mode="multiple"
                   showArrow
-                  style={{ width: '112%'}}
+                  style={{ width: '112%' }}
                   showSearch
                   placeholder="Please Select City(s)"
                   onChange={handleCity}
@@ -172,30 +212,52 @@ function T2_GA() {
                   <Select value="brisbane">Brisbane</Select>
                   <Select value="sydney">Sydney</Select>
                 </Select>
-                
-              
-                { available(t2Test) && Object.keys(t2Test).map((city) => {if (selectCity.includes(city)){
-                  return (
-                    <div style={{marginTop: 24, padding: 10, width: "950px", backgroundColor: 'white'}}>
-                      <Chart
-                      chartType="Bar" // Change chartType into Line
-                      data={t2List(t2Test[city])}
-                      width="930px"
-                      height="250px"
-                      options={generateOptions(city,city)}
-                      legendToggle
-                    />
-                  </div>
-                  )
-                }})}
 
-              </div>  
-            </Breadcrumb>  
-          </Content> 
+
+                {available(t2Test) && Object.keys(t2Test).map((city) => {
+                  if (selectCity.includes(city)) {
+                    return (
+                      <div style={{ marginTop: 24, padding: 10, width: "950px", backgroundColor: 'white' }}>
+                        <Chart
+                          chartType="Bar" // Change chartType into Line
+                          data={t2List(t2Test[city])}
+                          width="930px"
+                          height="250px"
+                          options={generateOptions(city, city)}
+                          legendToggle
+                        />
+                      </div>
+                    )
+                  }
+                })}
+                <div style={{marginTop: 24, padding: 10, width: "950px", backgroundColor: 'white'}}>
+                  <Chart
+                    chartType="Bar" 
+                    data={employ(file2020,file2021)}
+                    width="930px"
+                    height="250px"
+                    options={empOption('Employment Rate')}
+                    legendToggle
+                  />
+                </div>
+
+                <div style={{marginTop: 24, padding: 10, width: "950px", backgroundColor: 'white'}}>
+                  <Chart
+                    chartType="Bar" 
+                    data={unEmploy(file2020,file2021)}
+                    width="930px"
+                    height="250px"
+                    options={empOption('Unemployment Rate')}
+                    legendToggle
+                  />
+                </div>
+              </div>
+            </Breadcrumb>
+          </Content>
           <Footer style={{ textAlign: 'center' }}>CCC assignment2 group 11</Footer>
         </Layout>
 
-      </Layout>  
+      </Layout>
     </div>
   )
 }

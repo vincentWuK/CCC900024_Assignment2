@@ -10,6 +10,7 @@ import SubMenu from 'antd/lib/menu/SubMenu';
 import '../node_modules/bootstrap/dist/css/bootstrap.min.css';
 import Chart from 'react-google-charts';
 import { available } from './Util';
+import { request_sent_city } from './FetchData';
 
 const { Header, Footer, Sider, Content } = Layout;
 const { Title } = Typography;
@@ -29,46 +30,11 @@ function T2o() {
   }
   
   function submit(e) {
-    // TO DO
+    request_sent_city(homeDates).then((response) => setMoodCityTest(response))
   }
 
 
-  const [moodCityTest, setMoodCityTest] = useState(
-    {
-      'adelaide': 
-      {
-        'negative': 0.129,
-        'neutral': 0.419,
-        'positive': 0.355,
-        'very negative': 0.032,
-        'very positive': 0.065
-      },
-      'brisbane':
-      {
-        'negative': 0.074,
-        'neutral': 0.559, 
-        'positive': 0.235, 
-        'very negative': 0.015,
-        'very positive': 0.118
-      },
-      'sydney':
-      {
-        'very positive': 0.25,
-        'neutral': 0.25,
-        'positive': 0.5,
-        'negative': 0, 
-        'very negative': 0
-      },
-      'melbourne': 
-      {
-        'positive': 0.333,
-        'very negative': 0.333,
-        'very positive': 0.333,
-        'negative': 0, 
-        'neutral': 0
-      }
-    }
-  )
+  const [moodCityTest, setMoodCityTest] = useState({})
 
   function toT2oList(cityMood) {
     var table = [["mood", "ratio"]]
@@ -134,7 +100,7 @@ function T2o() {
                 <Modal.Title>{info.title}</Modal.Title>
               </Modal.Header>
               <Modal.Body>
-                { Object.keys(moodCityTest).includes(info.code) &&
+                { available(moodCityTest) && Object.keys(moodCityTest).includes(info.code) &&
                     (<Chart
                     chartType="PieChart"
                     data={toT2oList(moodCityTest[info.code])}

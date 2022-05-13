@@ -6,6 +6,7 @@ import './App.css';
 import SubMenu from 'antd/lib/menu/SubMenu';
 import Chart from 'react-google-charts';
 import { available } from './Util';
+import { request_sentiment_analysis } from './FetchData';
 
 const { Header, Footer, Sider, Content } = Layout;
 const { Title } = Typography;
@@ -24,7 +25,7 @@ function T1_GA() {
   }
 
   function submit(e) {
-    // TO DO
+    request_sentiment_analysis(homeDates).then((response) => setT1Test(response))
   }
   
   const [t1Test, setT1Test] = useState({})
@@ -167,7 +168,7 @@ function T1_GA() {
                 </Select>
                 
               
-                { available(t1Test) && Object.keys(t1Test).map((suburb) => {if (selectSuburb.includes(suburb)){
+                { available(t1Test) && Object.keys(t1Test).map((suburb) => {if (selectSuburb.includes(suburb)) {
                   return (
                     <div style={{marginTop: 24, padding: 10, width: "950px", backgroundColor: 'white'}}>
                       <Chart
