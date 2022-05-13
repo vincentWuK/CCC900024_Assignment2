@@ -10,6 +10,7 @@ RUN apt-get update \
   && pip3 install --upgrade pip
 
 RUN yes | apt-get install libopenmpi-dev
+RUN yes | apt install openmpi-bin
 RUN yes | apt install mpich
 # create a work directory
 WORKDIR /crawler
