@@ -1,0 +1,5 @@
+textblob
+jionlp
+CouchDB
+subfinder-vvvin
+numpy

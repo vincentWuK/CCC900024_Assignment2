@@ -1,23 +1,46 @@
 {
-    "apikey": "HrfRYhymphtDMrEhDdNa5kFU8",
-    "apisecret": "4jaIGUPfwpGSHz6cIXse4g1MljY1tFVdqTrLgLHToaIa5dkKOR",
-    "accesstoken": "1516266958232375299-uBLYr15LDOdK47XsPctWU7xPyPs1Lh",
-    "accesssecret": "l9bLNZkTQoO0AiUcZ4YwugZC4ZYdobumIyTSU13uYlepA",
+    "auth": {
+        "1": {
+            "apikey": "HrfRYhymphtDMrEhDdNa5kFU8",
+            "apisecret": "4jaIGUPfwpGSHz6cIXse4g1MljY1tFVdqTrLgLHToaIa5dkKOR",
+            "accesstoken": "1516266958232375299-uBLYr15LDOdK47XsPctWU7xPyPs1Lh",
+            "accesssecret": "l9bLNZkTQoO0AiUcZ4YwugZC4ZYdobumIyTSU13uYlepA",
+            "bearer_token": "AAAAAAAAAAAAAAAAAAAAAEUobwEAAAAAaGp1cabww34j1wzu4MA%2BJNexbuI%3D0nmfea8PPGk7Y90GHK9VTGwOS9R2QtKAnz3AWx7qJgug8XCk6p"
+        },
+        "2": {
+            "apikey": "Swgvl4qVF4vTHR6NrQP8E37Cg",
+            "apisecret": "04cfvQvS1yDzK2UFksajWJWAqmMzP9LAMAsw4WHCvvuoFoXDgm",
+            "accesstoken": "1516270758430867456-yp0FfIniKd5RWW7352w6HYQf8wetrK",
+            "accesssecret": "iehjkVNG8ArOItg7hwdpm3LclmMygl7Bwo61UYIHMUGxg",
+            "bearer_token": "AAAAAAAAAAAAAAAAAAAAACOabgEAAAAAM58ztjT4efUJK0aAIs1AzYb593Q%3DHJjX9EJAwHyDvUCGNcONCKDXAseCVQ0wgBo6U0FYOSA1nortj1"
+        }
+    },
     "keywordsfile": {
         "job": "keywords_job.txt",
         "multiculture": "keywords_multiculture.txt"
     },
-    "location": {
-        "adelaide": "138.44211992, -35.3489800609999, 138.755022665, -34.6525470049999",
-        "sydney": "150.5858542, -34.196521, 151.3515265, -33.3748485",
-        "melbourne": "144.588005432, -38.4338593059999, 145.520447024, -37.5112737229999",
-        "canberra": "148.995911617, -35.4802704169999, 149.233263997, -35.147689163",
-        "brisbane": "152.4688111, -27.9536501, 153.6399535, -27.0057918"
-    },
+    "city": [
+        "melbourne",
+        "adelaide",
+        "sydney",
+        "brisbane"
+    ],
+    "suburb": [
+        "Carlton",
+        "Docklands",
+        "East Melbourne",
+        "Kensington",
+        "North Melbourne",
+        "Parkville",
+        "Port Melbourne",
+        "Southbank",
+        "South Yarra",
+        "West Melbourne",
+        "Melbourne"
+    ],
     "server": "http://admin:admin@172.26.128.224:5984/",
     "database": {
         "job": "job",
         "multiculture": "multiculture"
-    },
-    "languages": "en, fr, ja, zh, ar"
+    }
 }
