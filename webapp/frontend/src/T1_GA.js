@@ -65,7 +65,9 @@ function T1_GA() {
       }
       table.push(mood_row)
     }
+    console.log(String(table))
     return table
+
   }
 
   const [selectSuburb, setSelectSuburb] = useState([]);
