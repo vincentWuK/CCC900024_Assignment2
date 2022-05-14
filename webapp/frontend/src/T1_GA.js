@@ -40,6 +40,7 @@ function T1_GA() {
   }
 
   function t1List(suburbMood) {
+    console.log(suburbMood)
     var table = []
     table.push(["date", "very positive", "positive", "neutral", "negative", "very negative"])
     var dates = []
@@ -65,7 +66,7 @@ function T1_GA() {
       }
       table.push(mood_row)
     }
-    console.log(String(table))
+    console.log(String(suburbMood))
     return table
 
   }
