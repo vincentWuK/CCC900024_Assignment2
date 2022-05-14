@@ -23,7 +23,7 @@ function T2o() {
   const [t2oDate, setT2oDate] = useState({from_date:'', to_date:''});
 
   function onChange(t2oDates, t2oDateStrings) {
-    const newT2oDates = {...t2oDates}
+    const newT2oDates = {...t2oDate}
     newT2oDates['from_date'] = t2oDateStrings[0]
     newT2oDates['to_date'] = t2oDateStrings[1]
     setT2oDate(newT2oDates)

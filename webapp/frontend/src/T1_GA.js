@@ -18,7 +18,7 @@ function T1_GA() {
 
   const [t1Date, setT1Date] = useState({from_date:'', to_date:''});
   function onChange(t1Dates, t1DateStrings) {
-    const newT1Dates = {...t1Dates}
+    const newT1Dates = {...t1Date}
     newT1Dates['from_date'] = t1DateStrings[0]
     newT1Dates['to_date'] = t1DateStrings[1]
     setT1Date(newT1Dates)
