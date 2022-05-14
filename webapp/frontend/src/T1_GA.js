@@ -168,7 +168,7 @@ function T1_GA() {
               
                 { available(t1Test) && Object.keys(t1Test).map((suburb) => {if (selectSuburb.includes(suburb)) {
                   return (
-                    console.log(suburb) ||
+                    console.log(JSON.stringify(t1Test[suburb])) ||
                     <div style={{marginTop: 24, padding: 10, width: "950px", backgroundColor: 'white'}}>
                       <Chart
                       chartType="Line"
