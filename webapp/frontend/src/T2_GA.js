@@ -143,11 +143,16 @@ function T2_GA() {
               Dashboard
             </Menu.Item>
             <SubMenu
-              title={<span> AURIN Unemployment Analysis</span>}>
+              title={<span> Unemployment Analysis</span>}>
               <Menu.ItemGroup>
                 <Menu.Item>
                   <Space direction="vertical" size={12}>
-                    <RangePicker />
+                    <RangePicker 
+                      ranges={{
+                        Today: [moment(), moment()],
+                        'This Month': [moment().startOf('month'), moment().endOf('month')],
+                      }}
+                      onChange={onChange}/>
                   </Space>
                 </Menu.Item>
                 <Button onClick={submit} type="primary" style={{ marginLeft: "115px" }}>Submit</Button>
