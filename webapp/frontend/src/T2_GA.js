@@ -39,9 +39,11 @@ function T2_GA() {
     }
 
     var empRate = []
-    empRate.push(["year", "Sydney", "Melbourne", "Brisbane", "Adelaide"])
-    empRate.push(['2020', employ2020[0], employ2020[1], employ2020[2], employ2020[3]])
-    empRate.push(['2021', employ2021[0], employ2021[1], employ2021[2], employ2021[3]])
+    empRate.push(["city", "2020", "2021"])
+    empRate.push(['Sydney',employ2020[0],employ2021[0]])
+    empRate.push(['Melbourne',employ2020[1],employ2021[1]])
+    empRate.push(['Brisbane',employ2020[2],employ2021[2]])
+    empRate.push(['Adelaide',employ2020[3],employ2021[3]])
     return empRate
   }
 
@@ -56,33 +58,14 @@ function T2_GA() {
     }
 
     var unEmpRate = []
-    unEmpRate.push(["year", "Sydney", "Melbourne", "Brisbane", "Adelaide"])
-    unEmpRate.push(['2020', unEmp2020[0], unEmp2020[1], unEmp2020[2], unEmp2020[3]])
-    unEmpRate.push(['2021', unEmp2021[0], unEmp2021[1], unEmp2021[2], unEmp2021[3]])
+    unEmpRate.push(["city", "2020", "2021"])
+    unEmpRate.push(['Sydney',unEmp2020[0],unEmp2020[0]])
+    unEmpRate.push(['Melbourne',unEmp2020[1],unEmp2020[1]])
+    unEmpRate.push(['Brisbane',unEmp2020[2],unEmp2020[2]])
+    unEmpRate.push(['Adelaide',unEmp2020[3],unEmp2020[3]])
     return unEmpRate
   }
 
-  function allEmploy(data1, data2) {
-    var employ2020 = []
-    var employ2021 = []
-    var unEmp2020 = []
-    var unEmp2021 = []
-    for (const i in data1.features) {
-      employ2020.push(parseFloat(data1.features[i].properties.mpy_rt_15_64))
-      unEmp2020.push(parseFloat(data1.features[i].properties.unemp_rt_15))
-    }
-    for (const j in data2.features) {
-      employ2021.push(parseFloat(data2.features[j].properties.mpy_rt_15_64))
-      unEmp2021.push(parseFloat(data2.features[j].properties.unemp_rt_15))
-    }
-
-    var allRate = []
-    allRate.push(["year", "Sydney Employ", "Sydney Unemploy", "Melbourne Employ", "Melbourne Unemploy",
-      "Brisbane Employ", "Brisbane Unemploy", "Adelaide Employ", "Adelaide Unemploy"])
-    allRate.push(['2020', employ2020[0], unEmp2020[0], employ2020[1], unEmp2020[1], employ2020[2], unEmp2020[2], employ2020[3], unEmp2020[3]])
-    allRate.push(['2021', employ2021[0], unEmp2021[0], employ2021[1], unEmp2021[1], employ2021[2], unEmp2021[2], employ2021[3], unEmp2021[3]])
-    return allRate
-  }
   const [t2Test, setT2Test] = useState({})
 
   function generateOptions(title, subtitle) {
