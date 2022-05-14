@@ -330,7 +330,7 @@ def cal_sent_in_city(from_date,to_date,city = CITY_STR):
  
     return city_sen_num_dict
 
-def cal_specific_day_in_the_city_with_every_sent(from_d, to_d, suburb = CITY_STR):
+def cal_specific_day_in_the_city_with_every_sent(from_d, to_d, suburbs = CITY_STR):
     keys = ("date", "value")
     date_value_dict = dict.fromkeys(keys)
     from_da = datetime.datetime.strptime(from_d, '%Y-%m-%d')
@@ -342,7 +342,7 @@ def cal_specific_day_in_the_city_with_every_sent(from_d, to_d, suburb = CITY_STR
     while from_da <= to_da:
         curr = from_da
         curr = datetime.datetime.strftime(curr,'%Y-%m-%d')
-        cur_date_por_dict =  cal_sent_in_city(curr, curr,suburb)
+        cur_date_por_dict =  cal_sent_in_city(curr, curr,suburbs)
         #print(cur_date_por_dict)
         for suburb in cur_date_por_dict:
             for sen in cur_date_por_dict[suburb]:
