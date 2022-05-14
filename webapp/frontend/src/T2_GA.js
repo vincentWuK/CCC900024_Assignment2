@@ -22,6 +22,7 @@ function T2_GA() {
     const newT2Dates = { ...t2Date }
     newT2Dates['from_date'] = t2DateStrings[0]
     newT2Dates['to_date'] = t2DateStrings[1]
+    console.log(newT2Dates)
     setT2Date(newT2Dates)
   }
 
