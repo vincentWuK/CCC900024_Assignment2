@@ -4,6 +4,3 @@ employee
 employer
 boss
 occupation
-career
-labour
-labor
