@@ -222,7 +222,7 @@ def cal_total_tweets_in_the_suburb_speak_lan_with_every_sent(from_date, to_date,
     #     sen_dict = suburb_lan_sent_num_dict[key]
     #     for sen in sen_dict:
     #         sen_dict[sen] = round(sen_dict[sen],3)
-    return suburb_lan_sent_num_dictq1e
+    return suburb_lan_sent_num_dict
 # print("=================== test cal_total_tweets_in_the_suburb_speak_lan_with_every_sent===============================")  
 # print(cal_total_tweets_in_the_suburb_speak_lan_with_every_sent("2019-4-1", "2023-5-3", "fr,en,ja" , "sydney,melbourne,brisbane"))
 # print("=================================================================================================================") 
