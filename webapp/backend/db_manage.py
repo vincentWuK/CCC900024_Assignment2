@@ -25,7 +25,7 @@ def creat_view(dbname, design_doc, viewname, mapfunction, reducefunction):
     dbname.save(data)
 #====================================================Senario 1:=======================================================================
 multidb = couchdb.Server('http://' + username + ':' + password + '@' + multiculture_host + ':' + port)
-multi = multidb['test_data']
+multi = multidb[multiculture_datebase]
 view_name = 'lan'
 lan_map = '''function (doc){ 
                 var date = new Date(doc.created_at);
