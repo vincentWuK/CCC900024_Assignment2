@@ -102,7 +102,7 @@ def cal_total_tweets_in_same_city(from_date, to_date, suburb=SUBURB_STR, lan=LAN
     lan_list = lan.split(',')
     #print(lan_list)
     suburb_lan_num_dict = {}
-    time_suburb_lan_row = get_view('multiculture','lan',3)
+    time_suburb_lan_row = get_view('test_data','lan',3)#get_view('multiculture','lan',3)
     time_suburb_lan = time_suburb_lan_row['rows']
     for item in time_suburb_lan:
         t1 = item['key'][0]
@@ -154,7 +154,7 @@ def cal_total_tweets_in_same_city(from_date, to_date, suburb=SUBURB_STR, lan=LAN
 def cal_total_tweets_in_the_suburb_speak_lan(from_date, to_date, lan = LAN_STR, suburb = SUBURB_STR):
     from_d = datetime.datetime.strptime(from_date, '%Y-%m-%d')
     to_d = datetime.datetime.strptime(to_date, '%Y-%m-%d')
-    time_suburb_lan_row = get_view('multiculture','lan',3)
+    time_suburb_lan_row = get_view('test_data','lan',3)#get_view('multiculture','lan',3)
     time_suburb_lan = time_suburb_lan_row['rows']
     total = 0
     for item in time_suburb_lan:
@@ -194,7 +194,7 @@ def create_basic_suburb_lan_sent_num_dict(suburb,senti):
 def cal_total_tweets_in_the_suburb_speak_lan_with_every_sent(from_date, to_date,lan = LAN_STR, suburb = SUBURB_STR,sent = SENTIMENT):
     from_d = datetime.datetime.strptime(from_date, '%Y-%m-%d')
     to_d = datetime.datetime.strptime(to_date, '%Y-%m-%d')
-    time_suburb_lan_sent_row = get_view('multiculture','lan',4)
+    time_suburb_lan_sent_row = get_view('test_data','lan',4)#get_view('multiculture','lan',4)
     time_suburb_lan_sent = time_suburb_lan_sent_row['rows']
     suburb_lan_sent_num_dict = create_basic_suburb_lan_sent_num_dict(suburb,sent)
     total = 0
@@ -292,9 +292,10 @@ def cal_sent_in_city(from_date,to_date,city = CITY_STR):
     from_d = datetime.datetime.strptime(from_date, '%Y-%m-%d')
     to_d = datetime.datetime.strptime(to_date, '%Y-%m-%d')
     city_list = city.split(',')
-    city_sen_num_dict = {}
+#    city_sen_num_dict = {}
     time_city_sen_row = get_job_view('job','job',3)
     time_city_sen = time_city_sen_row['rows']
+    city_sen_num_dict = create_basic_suburb_lan_sent_num_dict(CITY_STR,SENTIMENT)
     for item in time_city_sen:
         t1 = item['key'][0]
         city = item['key'][1]
@@ -311,17 +312,20 @@ def cal_sent_in_city(from_date,to_date,city = CITY_STR):
                 city_sen_num_dict[city] = {}
                 city_sen_num_dict[city][sen] = count
     
-    # for key in city_sen_num_dict:
-    #     total_twitters_in_the_suburb = cal_total_twitters_in_the_city(from_date, to_date, key)
-    #     lan_dict = city_sen_num_dict[key]
-    #     for lan in lan_dict:
-    #         a = lan_dict[lan] / total_twitters_in_the_suburb
-    #         lan_dict[lan] = a
+    for key in city_sen_num_dict:
+        total_twitters_in_the_suburb = cal_total_twitters_in_the_city(from_date, to_date, key)
+        lan_dict = city_sen_num_dict[key]
+        for lan in lan_dict:
+            if total_twitters_in_the_suburb != 0:
+                a = lan_dict[lan] / total_twitters_in_the_suburb
+            else:
+                a = lan_dict[lan]
+            lan_dict[lan] = a
             
-    # for key in city_sen_num_dict:
-    #     lan_dict = city_sen_num_dict[key]
-    #     for lan in lan_dict:
-    #         lan_dict[lan] = round(lan_dict[lan],3)
+    for key in city_sen_num_dict:
+        lan_dict = city_sen_num_dict[key]
+        for lan in lan_dict:
+            lan_dict[lan] = round(lan_dict[lan],3)
             
     lan_list = SENTIMENT.split(',')
     for key in city_sen_num_dict:
@@ -331,6 +335,7 @@ def cal_sent_in_city(from_date,to_date,city = CITY_STR):
                 lan_dict[lans] = 0  
  
     return city_sen_num_dict
+
 
 def cal_specific_day_in_the_city_with_every_sent(from_d, to_d, suburbs = CITY_STR):
     keys = ("date", "value")
@@ -345,6 +350,7 @@ def cal_specific_day_in_the_city_with_every_sent(from_d, to_d, suburbs = CITY_ST
         curr = from_da
         curr = datetime.datetime.strftime(curr,'%Y-%m-%d')
         cur_date_por_dict =  cal_sent_in_city(curr, curr,suburbs)
+        
         #print(cur_date_por_dict)
         for suburb in cur_date_por_dict:
             for sen in cur_date_por_dict[suburb]:

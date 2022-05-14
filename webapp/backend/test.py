@@ -13,6 +13,6 @@ print(cal_specific_day_in_the_suburb_speak_lan_with_every_sent("2014-7-29", "201
 
 print("=====================================TEST SENARIO2=====================================================")
 print("=====================================sentiment proportion==============================================")
-print(cal_sent_in_city('2022-5-6','2022-5-7'))
+print(cal_sent_in_city('2022-5-6','2022-5-6'))
 print("===========================cal_specific_day_in_the_city_with_every_sent proportion===========================")
 print(cal_specific_day_in_the_city_with_every_sent('2022-5-6','2022-5-7'))
