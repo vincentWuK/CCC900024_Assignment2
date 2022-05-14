@@ -5,7 +5,7 @@ FROM python:3
 WORKDIR /app
 
 # set environment variable
-ENV FLASK_APP=send_request.py
+ENV FLASK_APP=app.py
 ENV FLASK_ENV=development
 
 # setup requirement for backend
@@ -17,4 +17,4 @@ RUN pip install -r requirements.txt
 COPY . .
 
 # run cmd
-CMD [ "python", "send_request.py" ]
+CMD [ "python", "app.py" ]
