@@ -1,39 +1,24 @@
+from ctypes import util
 import datetime
 from datetime import timedelta
-from flask import request, jsonify, render_template
-from flask_restful import Resource, reqparse
+from flask import request, jsonify
+from flask_restful import Resource
 from db_manage import *
-from job_db import *
 from decimal import *
-from flask import Flask, request
-from flask_restful import Resource, Api
-from flask_cors import CORS
-import sys
-
-app = Flask(__name__)
-api = Api(app)
-CORS(app)
-
-SUBURB_STR= "Carlton,Docklands,East Melbourne,Kensington,North Melbourne,Parkville,Port Melbourne,Southbank,South Yarra,West Melbourne,Melbourne"
-CITY_STR = "melbourne,sydney,brisbane,adelaide"
-LAN_STR = "en,ja,in,th,fr,ar"
-SENTIMENT="positive,very positive,negative,very negative,neutral"
-
+from flask_restful import Resource
+from util import *
 
 #=================================================Senario1=============================================================
 class Total_Tweest_Proportion(Resource):
     def get(self):
-
         from_date = request.args.get('from_date')
         to_date = request.args.get('to_date')
-        request_suburb = request.args.get('suburb')
-        request_lan = request.args.get('lan')
+        request_suburb = request.args.get('suburb', default = SUBURB_STR)
+        request_lan = request.args.get('lan',default=LAN_STR)
         result = cal_total_tweets_in_same_city(from_date, to_date, request_suburb, request_lan)
         resp = jsonify(result)
         resp.status_code = 200
         return resp
-api.add_resource(Total_Tweest_Proportion, "/total_tweets_proportion", endpoint='total_tweets_proportion')
-
 '''
 #METHOD = GET
 #request = {"from": "2021-05-03",
@@ -45,26 +30,23 @@ class Sentiment_Analysis(Resource):
     def get(self):
         from_date = request.args.get('from_date')
         to_date = request.args.get('to_date')
-        request_suburb = request.args.get('suburb')
-        request_lan = request.args.get('lan')
+        request_suburb = request.args.get('suburb',default = SUBURB_STR)
+        request_lan = request.args.get('lan',default=LAN_STR)
         result = cal_total_tweets_in_the_suburb_speak_lan_with_every_sent(from_date, to_date, request_lan,request_suburb)
         resp = jsonify(result)
         resp.status_code = 200
         return resp
 
-api.add_resource(Sentiment_Analysis, "/Sentiment_Analysis", endpoint='Sentiment_Analysis')
-
 class Daily_Analysis(Resource):
     def get(self):
         from_date = request.args.get('from_date')
         to_date = request.args.get('to_date')
-        request_suburb = request.args.get('suburb')
-        request_lan = request.args.get('lan')
-        result = cal_specific_day_in_the_suburb_speak_lan_with_every_sent(from_date, to_date)
+        request_suburb = request.args.get('suburb',default = SUBURB_STR)
+        request_lan = request.args.get('lan',default=LAN_STR)
+        result = cal_specific_day_in_the_suburb_speak_lan_with_every_sent(from_date, to_date, request_lan, request_suburb)
         resp = jsonify(result)
         resp.status_code = 200
         return resp
-api.add_resource(Daily_Analysis, "/daily_Analysis", endpoint='daily_Analysis')
 
 
 #=================================================Senario2=============================================================
@@ -72,25 +54,21 @@ class sent_city(Resource):
     def get(self):
         from_date = request.args.get('from_date')
         to_date = request.args.get('to_date')
-        city = request.args.get('city')
+        city = request.args.get('city',default=CITY_STR)
         result = cal_sent_in_city(from_date,to_date,city)
         resp = jsonify(result)
         resp.status_code = 200
         return resp
-api.add_resource(sent_city, "/sent_city", endpoint='sent_city')
-
 
 class daily_sent_city(Resource):
     def get(self):
         from_date = request.args.get('from_date')
         to_date = request.args.get('to_date')
-        suburb = request.args.get('city')
-        result =  cal_specific_day_in_the_city_with_every_sent(from_date, to_date, suburb)
+        city = request.args.get('city',default=CITY_STR)
+        result =  cal_specific_day_in_the_city_with_every_sent(from_date, to_date, city)
         resp = jsonify(result)
         resp.status_code = 200
         return resp
-api.add_resource(daily_sent_city, "/daily_sent_city", endpoint='daily_sent_city')
-
 
 
 ''''   
@@ -104,7 +82,7 @@ request = {"from": "2021-5-3",
 def cal_total_twitters_in_the_suburb(from_date, to_date, suburb):
     from_d = datetime.datetime.strptime(from_date, '%Y-%m-%d')
     to_d = datetime.datetime.strptime(to_date, '%Y-%m-%d')
-    time_suburb_row = get_view('test_data','lan',2)
+    time_suburb_row = get_view('multiculture','lan',2)
     time_suburb = time_suburb_row['rows']
     total = 0
     for item in time_suburb:
@@ -120,14 +98,16 @@ def cal_total_tweets_in_same_city(from_date, to_date, suburb=SUBURB_STR, lan=LAN
     from_d = datetime.datetime.strptime(from_date, '%Y-%m-%d')
     to_d = datetime.datetime.strptime(to_date, '%Y-%m-%d')
     suburb_list = suburb.split(',')
+    #print(suburb_list)
     lan_list = lan.split(',')
     #print(lan_list)
     suburb_lan_num_dict = {}
-    time_suburb_lan_row = get_view('test_data','lan',3)
+    time_suburb_lan_row = get_view('multiculture','lan',3)
     time_suburb_lan = time_suburb_lan_row['rows']
     for item in time_suburb_lan:
         t1 = item['key'][0]
         suburb = item['key'][1]
+        #print(str(suburb) +" is suburb")
         lan = item['key'][2]
         count = item['value']
         t1 = datetime.datetime.strptime(t1,"%Y-%m-%d")
@@ -139,7 +119,22 @@ def cal_total_tweets_in_same_city(from_date, to_date, suburb=SUBURB_STR, lan=LAN
                     suburb_lan_num_dict[suburb][lan] = count
             else:
                 suburb_lan_num_dict[suburb] = {}
-                suburb_lan_num_dict[suburb][lan] = count  
+                suburb_lan_num_dict[suburb][lan] = count
+  
+    # for key in suburb_lan_num_dict:
+    #     others_percent = 1
+    #     total_twitters_in_the_suburb = cal_total_twitters_in_the_suburb(from_date, to_date, key)
+    #     lan_dict = suburb_lan_num_dict[key]
+    #     for lan in lan_dict:
+    #         a = lan_dict[lan] / total_twitters_in_the_suburb
+    #         lan_dict[lan] = a
+    #         others_percent = others_percent - a 
+    #     lan_dict['others'] = others_percent
+        
+    # for key in suburb_lan_num_dict:
+    #     lan_dict = suburb_lan_num_dict[key]
+    #     for lan in lan_dict:
+    #         lan_dict[lan] = round(lan_dict[lan],3)  
             
     for key in suburb_lan_num_dict:
         lan_dict = suburb_lan_num_dict[key]
@@ -147,20 +142,19 @@ def cal_total_tweets_in_same_city(from_date, to_date, suburb=SUBURB_STR, lan=LAN
             if lans not in lan_dict:
                 lan_dict[lans] = 0
             
-    print(suburb_lan_num_dict)
     #result: {'melbourne': {'fr': 0.333, 'en': 0.167, 'ja': 0.5, 'others': 0.0}, 
     # 'brisbane': {'en': 0.5, 'ja': 0.5, 'others': 0.0}, 
     # 'sydney': {'en': 0.5, 'fr': 0.25, 'ja': 0.25, 'others': 0.0}}
     return suburb_lan_num_dict
 
-print("========================== test cal_total_tweets_in_same_city========================")    
-cal_total_tweets_in_same_city("2022-5-1", "2023-5-3", "sydney,melbourne,brisbane", "fr,en,ja")
+# print("========================== test cal_total_tweets_in_same_city========================")    
+# print(cal_total_tweets_in_same_city("2014-7-29", "2023-5-3"))
 
 
 def cal_total_tweets_in_the_suburb_speak_lan(from_date, to_date, lan = LAN_STR, suburb = SUBURB_STR):
     from_d = datetime.datetime.strptime(from_date, '%Y-%m-%d')
     to_d = datetime.datetime.strptime(to_date, '%Y-%m-%d')
-    time_suburb_lan_row = get_view('test_data','lan',3)
+    time_suburb_lan_row = get_view('multiculture','lan',3)
     time_suburb_lan = time_suburb_lan_row['rows']
     total = 0
     for item in time_suburb_lan:
@@ -198,7 +192,7 @@ def create_basic_suburb_lan_sent_num_dict(suburb,senti):
 def cal_total_tweets_in_the_suburb_speak_lan_with_every_sent(from_date, to_date,lan = LAN_STR, suburb = SUBURB_STR,sent = SENTIMENT):
     from_d = datetime.datetime.strptime(from_date, '%Y-%m-%d')
     to_d = datetime.datetime.strptime(to_date, '%Y-%m-%d')
-    time_suburb_lan_sent_row = get_view('test_data','lan',4)
+    time_suburb_lan_sent_row = get_view('multiculture','lan',4)
     time_suburb_lan_sent = time_suburb_lan_sent_row['rows']
     suburb_lan_sent_num_dict = create_basic_suburb_lan_sent_num_dict(suburb,sent)
     total = 0
@@ -216,21 +210,21 @@ def cal_total_tweets_in_the_suburb_speak_lan_with_every_sent(from_date, to_date,
             else:
                 suburb_lan_sent_num_dict[su] = {}
                 suburb_lan_sent_num_dict[su][se] = count
-    for key in suburb_lan_sent_num_dict:
-        sen_dict = suburb_lan_sent_num_dict[key]
-        for sen in sen_dict:
-            if cal_total_tweets_in_the_suburb_speak_lan(from_date, to_date, lan, key) != 0:
-                a = sen_dict[sen] / cal_total_tweets_in_the_suburb_speak_lan(from_date, to_date, lan, key)
-                sen_dict[sen] = a
-    for key in suburb_lan_sent_num_dict:
-        sen_dict = suburb_lan_sent_num_dict[key]
-        for sen in sen_dict:
-            sen_dict[sen] = round(sen_dict[sen],3)
+    # for key in suburb_lan_sent_num_dict:
+    #     sen_dict = suburb_lan_sent_num_dict[key]
+    #     for sen in sen_dict:
+    #         if cal_total_tweets_in_the_suburb_speak_lan(from_date, to_date, lan, key) != 0:
+    #             a = sen_dict[sen] / cal_total_tweets_in_the_suburb_speak_lan(from_date, to_date, lan, key)
+    #             sen_dict[sen] = a
+    # for key in suburb_lan_sent_num_dict:
+    #     sen_dict = suburb_lan_sent_num_dict[key]
+    #     for sen in sen_dict:
+    #         sen_dict[sen] = round(sen_dict[sen],3)
     return suburb_lan_sent_num_dict
-print("=================== test cal_total_tweets_in_the_suburb_speak_lan_with_every_sent===============================")  
-print(cal_total_tweets_in_the_suburb_speak_lan_with_every_sent("2019-4-1", "2023-5-3", "fr,en,ja" , "sydney,melbourne,brisbane"))
-print("=================================================================================================================") 
-print(cal_total_tweets_in_the_suburb_speak_lan_with_every_sent("2020-5-1", "2020-5-2", "fr"))
+# print("=================== test cal_total_tweets_in_the_suburb_speak_lan_with_every_sent===============================")  
+# print(cal_total_tweets_in_the_suburb_speak_lan_with_every_sent("2019-4-1", "2023-5-3", "fr,en,ja" , "sydney,melbourne,brisbane"))
+# print("=================================================================================================================") 
+# print(cal_total_tweets_in_the_suburb_speak_lan_with_every_sent("2020-5-1", "2020-5-2", "fr"))
 #cal_total_tweets_in_the_suburb_speak_lan_with_every_sent("2019-4-1", "2023-5-3", "fr" , "sydney,melbourne,brisbane")
 
 def cal_specific_day_in_the_suburb_speak_lan_with_every_sent(from_d, to_d,
@@ -270,8 +264,8 @@ def cal_specific_day_in_the_suburb_speak_lan_with_every_sent(from_d, to_d,
         i+=1
         from_da = from_da + timedelta(days=1)
     return result
-print("=================== test cal_specific_day_in_the_suburb_speak_lan_with_every_sent===============================")  
-print(cal_specific_day_in_the_suburb_speak_lan_with_every_sent("2014-7-29", "2014-7-30","en,in","Calton,Docklands"))
+# print("=================== test cal_specific_day_in_the_suburb_speak_lan_with_every_sent===============================")  
+# print(cal_specific_day_in_the_suburb_speak_lan_with_every_sent("2014-7-29", "2014-7-30","en,in", SUBURB_STR))
 
 #=================================================Senario 2==============================================================
 
@@ -315,16 +309,18 @@ def cal_sent_in_city(from_date,to_date,city = CITY_STR):
                 city_sen_num_dict[city] = {}
                 city_sen_num_dict[city][sen] = count
     
-    for key in city_sen_num_dict:
-        total_twitters_in_the_suburb = cal_total_twitters_in_the_city(from_date, to_date, key)
-        lan_dict = city_sen_num_dict[key]
-        for lan in lan_dict:
-            a = lan_dict[lan] / total_twitters_in_the_suburb
-            lan_dict[lan] = a
-    for key in city_sen_num_dict:
-        lan_dict = city_sen_num_dict[key]
-        for lan in lan_dict:
-            lan_dict[lan] = round(lan_dict[lan],3)
+    # for key in city_sen_num_dict:
+    #     total_twitters_in_the_suburb = cal_total_twitters_in_the_city(from_date, to_date, key)
+    #     lan_dict = city_sen_num_dict[key]
+    #     for lan in lan_dict:
+    #         a = lan_dict[lan] / total_twitters_in_the_suburb
+    #         lan_dict[lan] = a
+            
+    # for key in city_sen_num_dict:
+    #     lan_dict = city_sen_num_dict[key]
+    #     for lan in lan_dict:
+    #         lan_dict[lan] = round(lan_dict[lan],3)
+            
     lan_list = SENTIMENT.split(',')
     for key in city_sen_num_dict:
         lan_dict = city_sen_num_dict[key]
@@ -368,13 +364,3 @@ def cal_specific_day_in_the_city_with_every_sent(from_d, to_d, suburb = CITY_STR
         i+=1
         from_da = from_da + timedelta(days=1)
     return result
-print("===========================TEST SENARIO2==================================")
-print("===========================sentiment proportion===========================")
-print(cal_sent_in_city('2022-5-6','2022-5-7',city = CITY_STR))
-print("===========================cal_specific_day_in_the_city_with_every_sent proportion===========================")
-print(cal_specific_day_in_the_city_with_every_sent('2022-5-6','2022-5-7'))
-
-
-
-if __name__ == '__main__':
-    app.run(debug=True, host='0.0.0.0')

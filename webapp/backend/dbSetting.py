@@ -1,0 +1,8 @@
+username = "admin"
+password = "admin"
+multiculture_host ="172.26.128.224"
+job_host = "172.26.128.224"
+port = "5984"
+multiculture_datebase = "multiculture"
+job_database = "job"
+design_doc  = "ANALYSIS"
