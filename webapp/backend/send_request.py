@@ -102,7 +102,7 @@ def cal_total_tweets_in_same_city(from_date, to_date, suburb=SUBURB_STR, lan=LAN
     lan_list = lan.split(',')
     #print(lan_list)
     suburb_lan_num_dict = {}
-    time_suburb_lan_row = get_view('test_data','lan',3)#get_view('multiculture','lan',3)
+    time_suburb_lan_row = get_view('multiculture','lan',3)
     time_suburb_lan = time_suburb_lan_row['rows']
     for item in time_suburb_lan:
         t1 = item['key'][0]
@@ -154,7 +154,7 @@ def cal_total_tweets_in_same_city(from_date, to_date, suburb=SUBURB_STR, lan=LAN
 def cal_total_tweets_in_the_suburb_speak_lan(from_date, to_date, lan = LAN_STR, suburb = SUBURB_STR):
     from_d = datetime.datetime.strptime(from_date, '%Y-%m-%d')
     to_d = datetime.datetime.strptime(to_date, '%Y-%m-%d')
-    time_suburb_lan_row = get_view('test_data','lan',3)#get_view('multiculture','lan',3)
+    time_suburb_lan_row = get_view('multiculture','lan',3)
     time_suburb_lan = time_suburb_lan_row['rows']
     total = 0
     for item in time_suburb_lan:
@@ -194,7 +194,7 @@ def create_basic_suburb_lan_sent_num_dict(suburb,senti):
 def cal_total_tweets_in_the_suburb_speak_lan_with_every_sent(from_date, to_date,lan = LAN_STR, suburb = SUBURB_STR,sent = SENTIMENT):
     from_d = datetime.datetime.strptime(from_date, '%Y-%m-%d')
     to_d = datetime.datetime.strptime(to_date, '%Y-%m-%d')
-    time_suburb_lan_sent_row = get_view('test_data','lan',4)#get_view('multiculture','lan',4)
+    time_suburb_lan_sent_row = get_view('multiculture','lan',4)
     time_suburb_lan_sent = time_suburb_lan_sent_row['rows']
     suburb_lan_sent_num_dict = create_basic_suburb_lan_sent_num_dict(suburb,sent)
     total = 0
