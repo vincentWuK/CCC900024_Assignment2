@@ -1,6 +1,14 @@
-job
-work
 employee
 employer
-boss
-occupation
+laid-off
+laid off
+a job
+got a job
+get fired
+got fired
+were fired
+was fired
+last job
+the job
+my job
+new job
