@@ -196,6 +196,7 @@ function T2_GA() {
                   <Select value="adelaide">Adelaide</Select>
                   <Select value="brisbane">Brisbane</Select>
                   <Select value="sydney">Sydney</Select>
+                  <Select value="melbourne">Melbourne</Select>
                 </Select>
 
 
