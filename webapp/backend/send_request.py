@@ -179,13 +179,15 @@ request = {"from": "2021-05-03",
 '''
 
 def create_basic_suburb_lan_sent_num_dict(suburb,senti):
-    sen_dict = {}
-    sent = senti.split(",")
+    
     suburb_dict = {}
     sub = suburb.split(",")
-    for sen in sent:
-        sen_dict[sen] = 0
+    
     for su in sub:
+        sen_dict = {}
+        sent = senti.split(",")
+        for sen in sent:
+            sen_dict[sen] = 0
         suburb_dict[su] = sen_dict
     return suburb_dict
 
@@ -220,7 +222,7 @@ def cal_total_tweets_in_the_suburb_speak_lan_with_every_sent(from_date, to_date,
     #     sen_dict = suburb_lan_sent_num_dict[key]
     #     for sen in sen_dict:
     #         sen_dict[sen] = round(sen_dict[sen],3)
-    return suburb_lan_sent_num_dict
+    return suburb_lan_sent_num_dictq1e
 # print("=================== test cal_total_tweets_in_the_suburb_speak_lan_with_every_sent===============================")  
 # print(cal_total_tweets_in_the_suburb_speak_lan_with_every_sent("2019-4-1", "2023-5-3", "fr,en,ja" , "sydney,melbourne,brisbane"))
 # print("=================================================================================================================") 
