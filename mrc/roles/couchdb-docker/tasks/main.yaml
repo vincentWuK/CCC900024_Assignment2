@@ -1,0 +1,28 @@
+# Create Docker containers
+
+# remove current running couchdb docker
+#- name: remove
+#  become: yes
+#  docker_container:
+#    name: couchdb
+#    state: absent
+
+- name: Create and start CouchDB Docker container
+  become: yes
+  docker_container:
+    name: couchdb
+    image: "ibmcom/couchdb3:{{ couchdb_docker_ver }}"
+    state: started
+    ports:
+      - "5984:5984" # Standard clustered port for all HTTP API requests
+      - "4369:4369" # Erlang port mapper daemon (epmd)
+      - "9100-9200:9100-9200" # Communication with other CouchDB nodes in the cluster
+
+    # /opt/couchdb/data
+    recreate: true
+    env:
+      COUCHDB_USER: "{{ couchdb_user }}"
+      COUCHDB_PASSWORD: "{{ couchdb_pwd }}"
+      COUCHDB_SECRET: "{{ couchdb_cookie }}"
+      # similar to > erl -name bus@192.168.0.1 -setcookie 'brumbrum' -kernel inet_dist_listen_min 9100 -kernel inet_dist_listen_max 9200
+      ERL_FLAGS: "-name \"couchdb@{{ inventory_hostname }}\" -setcookie \"{{ couchdb_cookie }}\" -kernel inet_dist_listen_min 9100 -kernel inet_dist_listen_max 9200"

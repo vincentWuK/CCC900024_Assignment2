@@ -1,0 +1,22 @@
+128.250.66.5
+
+[interop]
+appendWindowsPath = false
+
+chmod u+x ./run-setup.sh
+
+Get-NetAdapter | Where-Object {$_.InterfaceDescription -Match "Cisco AnyConnect"} | Set-NetIPInterface -InterfaceMetric 4000
+Get-NetIPInterface -InterfaceAlias "vEthernet (WSL)" | Set-NetIPInterface -InterfaceMetric 1
+
+./wsl-fix-resolvconf.sh
+
+sudo chmod 666 /var/run/docker.sock
+
+cd C:\Users\Angel\Desktop\deploy test\imp
+ssh -i ccc_a2.pem ubuntu@172.26.128.224
+
+sudo service docker start  * Starting Docker: docker
+
+docker exec -it 899f27e308e6 bash
+
+curl -X PUT http://admin:admin@172.17.0.3:5984/twitter/"001" -d '{ " Name " : " Raju " , " age " :" 23 " , " Designation " : " Designer " }'

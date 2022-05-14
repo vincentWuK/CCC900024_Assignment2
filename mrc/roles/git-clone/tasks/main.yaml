@@ -1,0 +1,30 @@
+# adapted from https://gist.github.com/devynspencer/effa29af449c46477ac71213210e7043
+---
+- name: add github ssh key
+  copy:
+    src: "{{ github_private_key_path }}{{ github_key }}"
+    dest: "{{ dest_path }}/.ssh/{{ github_key }}"
+    owner: "{{ user }}"
+    group: "{{ user }}"
+    mode: 0600 # owner can read, can write and can't execute
+  
+- name: configure ssh to use ansible key for github.com
+  template: 
+    src: "{{ github_templete_path }}"
+    dest: "{{ dest_path }}/.ssh/config"
+    owner: "{{ user }}"
+    group: "{{ user }}"
+    mode: 0600 # owner can read, can write and can't execute
+
+- name: clone a private repository
+  ansible.builtin.git:
+    repo: "ssh://git@github.com/{{ github_user }}/{{ github_repo }}.git"
+    key_file: "{{ dest_path }}/.ssh/{{ github_key }}"
+    accept_hostkey: yes # important
+    dest: "{{ repo_dest_path }}"
+  become: no
+
+- name: Remove GitHubKey
+  file:
+    path: "{{ github_private_key_path }}{{ github_key }}"
+    state: absent

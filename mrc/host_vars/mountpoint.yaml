@@ -1,0 +1,7 @@
+# I have no idea what this is so please keep them unchanged, unless you know what are you doing.
+---
+volumes:
+  - device: /dev/vdb
+    mountpoint: /var/lib/docker
+  - device: /dev/vdc
+    mountpoint: /data

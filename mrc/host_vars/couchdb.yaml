@@ -1,0 +1,6 @@
+# couchdb setup env - change here
+couchdb_user: admin
+couchdb_pwd: admin
+couchdb_cookie: 'a192aeb9904e6590849337933b000c99'
+couchdb_port: 5984
+couchdb_docker_ver: '3.2.1'

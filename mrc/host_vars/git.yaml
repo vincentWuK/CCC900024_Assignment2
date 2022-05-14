@@ -1,0 +1,14 @@
+# git folder
+github_private_key_path: files/
+github_templete_path: templates/ssh_config.j2
+dest_path: /home/ubuntu # saved in user space
+web_dest_path: /home/ubuntu/web/webapp
+crawler_dest_path: /home/ubuntu/web/TwitterCrawler
+repo_dest_path: /home/ubuntu/web
+
+# git link setup - change here
+github_user: vincentWuK
+github_repo: CCC900024_Assignment2
+
+# git private key filename - change here
+github_key: ccc_a2.github # if you want to change this var, make sure you also update templates/ssh_config.j2

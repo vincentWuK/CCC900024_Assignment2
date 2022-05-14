@@ -1,0 +1,10 @@
+---
+- name: config docker-compose
+  become: True
+  shell:
+    cmd: "sudo chmod 666 /var/run/docker.sock"
+    chdir: /
+- name: stop crawler docker compose
+  docker_compose:
+    project_src: "{{ crawler_dest_path }}"
+    state: absent

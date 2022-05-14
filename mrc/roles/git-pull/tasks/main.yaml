@@ -1,0 +1,10 @@
+---
+- name: git pull
+  shell: git pull
+  args:
+    chdir: "{{ repo_dest_path }}"
+
+- name: Remove GitHubKey
+  file:
+    path: /home/ubuntu/.ssh/GitHubKey
+    state: absent
