@@ -213,16 +213,16 @@ def cal_total_tweets_in_the_suburb_speak_lan_with_every_sent(from_date, to_date,
             else:
                 suburb_lan_sent_num_dict[su] = {}
                 suburb_lan_sent_num_dict[su][se] = count
-    # for key in suburb_lan_sent_num_dict:
-    #     sen_dict = suburb_lan_sent_num_dict[key]
-    #     for sen in sen_dict:
-    #         if cal_total_tweets_in_the_suburb_speak_lan(from_date, to_date, lan, key) != 0:
-    #             a = sen_dict[sen] / cal_total_tweets_in_the_suburb_speak_lan(from_date, to_date, lan, key)
-    #             sen_dict[sen] = a
-    # for key in suburb_lan_sent_num_dict:
-    #     sen_dict = suburb_lan_sent_num_dict[key]
-    #     for sen in sen_dict:
-    #         sen_dict[sen] = round(sen_dict[sen],3)
+    for key in suburb_lan_sent_num_dict:
+        sen_dict = suburb_lan_sent_num_dict[key]
+        for sen in sen_dict:
+            if cal_total_tweets_in_the_suburb_speak_lan(from_date, to_date, lan, key) != 0:
+                a = sen_dict[sen] / cal_total_tweets_in_the_suburb_speak_lan(from_date, to_date, lan, key)
+                sen_dict[sen] = a
+    for key in suburb_lan_sent_num_dict:
+        sen_dict = suburb_lan_sent_num_dict[key]
+        for sen in sen_dict:
+            sen_dict[sen] = round(sen_dict[sen],3)
     lan_list = SENTIMENT.split(',')
     for key in suburb_lan_sent_num_dict:
         lan_dict = suburb_lan_sent_num_dict[key]
