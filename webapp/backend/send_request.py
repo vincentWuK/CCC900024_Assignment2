@@ -215,13 +215,16 @@ def cal_total_tweets_in_the_suburb_speak_lan_with_every_sent(from_date, to_date,
                 suburb_lan_sent_num_dict[su][se] = count
     for key in suburb_lan_sent_num_dict:
         sen_dict = suburb_lan_sent_num_dict[key]
+        total = 0
         for sen in sen_dict:
-            total = cal_total_tweets_in_the_suburb_speak_lan(from_date, to_date, lan, key)
+            total += sen_dict[sen]
+        for sen in sen_dict:
             if total != 0:
                 a = sen_dict[sen] / total
             else:
                 a = sen_dict[sen]
             sen_dict[sen] = a
+            
     for key in suburb_lan_sent_num_dict:
         sen_dict = suburb_lan_sent_num_dict[key]
         for sen in sen_dict:
@@ -320,11 +323,13 @@ def cal_sent_in_city(from_date,to_date,city = CITY_STR):
                 city_sen_num_dict[city][sen] = count
     
     for key in city_sen_num_dict:
-        total_twitters_in_the_suburb = cal_total_twitters_in_the_city(from_date, to_date, key)
         lan_dict = city_sen_num_dict[key]
+        total = 0
         for lan in lan_dict:
-            if total_twitters_in_the_suburb != 0:
-                a = lan_dict[lan] / total_twitters_in_the_suburb
+            total += lan_dict[lan]
+        for lan in lan_dict:
+            if total != 0:
+                a = lan_dict[lan] / total
             else:
                 a = lan_dict[lan]
             lan_dict[lan] = a
