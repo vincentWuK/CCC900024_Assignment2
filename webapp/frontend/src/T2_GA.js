@@ -173,7 +173,7 @@ function T2_GA() {
                 </Menu.Item>
                 <Menu.Item>
                   <Button type="link" style={{ marginLeft: "-10px" }} onClick={() => { navigate('/T2o') }}>
-                    Topic 2 AURIN Unemployment Overview
+                    Topic 2 Graph Analysis
                   </Button>
                 </Menu.Item>
               </Menu.ItemGroup>
@@ -205,7 +205,7 @@ function T2_GA() {
                     return (
                       <div style={{ marginTop: 24, padding: 10, width: "950px", backgroundColor: 'white' }}>
                         <Chart
-                          chartType="Bar" // Change chartType into Line
+                          chartType="Line" // Change chartType into Line
                           data={t2List(t2Test[city])}
                           width="930px"
                           height="250px"
@@ -222,7 +222,7 @@ function T2_GA() {
                     data={employ(file2020,file2021)}
                     width="930px"
                     height="250px"
-                    options={empOption('Employment Rate')}
+                    options={empOption('AURIN Employment Rate')}
                     legendToggle
                   />
                 </div>
@@ -233,7 +233,7 @@ function T2_GA() {
                     data={unEmploy(file2020,file2021)}
                     width="930px"
                     height="250px"
-                    options={empOption('Unemployment Rate')}
+                    options={empOption('AURIN Unemployment Rate')}
                     legendToggle
                   />
                 </div>
