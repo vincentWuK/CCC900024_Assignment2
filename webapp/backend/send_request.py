@@ -194,6 +194,7 @@ def create_basic_suburb_lan_sent_num_dict(suburb,senti):
 def cal_total_tweets_in_the_suburb_speak_lan_with_every_sent(from_date, to_date,lan = LAN_STR, suburb = SUBURB_STR,sent = SENTIMENT):
     from_d = datetime.datetime.strptime(from_date, '%Y-%m-%d')
     to_d = datetime.datetime.strptime(to_date, '%Y-%m-%d')
+    suburb_list = suburb.split(',')
     time_suburb_lan_sent_row = get_view('multiculture','lan',4)
     time_suburb_lan_sent = time_suburb_lan_sent_row['rows']
     suburb_lan_sent_num_dict = create_basic_suburb_lan_sent_num_dict(suburb,sent)
@@ -205,7 +206,7 @@ def cal_total_tweets_in_the_suburb_speak_lan_with_every_sent(from_date, to_date,
         se = item['key'][3]
         count = item['value']
         t1 = datetime.datetime.strptime(t1,"%Y-%m-%d")
-        if t1 >= from_d and t1 <= to_d and su in suburb and la in lan and se in sent:
+        if t1 >= from_d and t1 <= to_d and su in suburb_list and la in lan and se in sent:
             total = count + total
             if su in suburb_lan_sent_num_dict:
                 suburb_lan_sent_num_dict[su][se] += count
@@ -222,6 +223,12 @@ def cal_total_tweets_in_the_suburb_speak_lan_with_every_sent(from_date, to_date,
     #     sen_dict = suburb_lan_sent_num_dict[key]
     #     for sen in sen_dict:
     #         sen_dict[sen] = round(sen_dict[sen],3)
+    lan_list = SENTIMENT.split(',')
+    for key in suburb_lan_sent_num_dict:
+        lan_dict = suburb_lan_sent_num_dict[key]
+        for lans in lan_list:
+            if lans not in lan_dict:
+                lan_dict[lans] = 0 
     return suburb_lan_sent_num_dict
 # print("=================== test cal_total_tweets_in_the_suburb_speak_lan_with_every_sent===============================")  
 # print(cal_total_tweets_in_the_suburb_speak_lan_with_every_sent("2019-4-1", "2023-5-3", "fr,en,ja" , "sydney,melbourne,brisbane"))
@@ -230,7 +237,7 @@ def cal_total_tweets_in_the_suburb_speak_lan_with_every_sent(from_date, to_date,
 #cal_total_tweets_in_the_suburb_speak_lan_with_every_sent("2019-4-1", "2023-5-3", "fr" , "sydney,melbourne,brisbane")
 
 def cal_specific_day_in_the_suburb_speak_lan_with_every_sent(from_d, to_d,
-                                                             lan = LAN_STR, suburb = SUBURB_STR,sent = SENTIMENT):
+                                                             lan = LAN_STR, suburbs = SUBURB_STR,sent = SENTIMENT):
     keys = ("date", "value")
     date_value_dict = dict.fromkeys(keys)
     from_da = datetime.datetime.strptime(from_d, '%Y-%m-%d')
@@ -238,19 +245,18 @@ def cal_specific_day_in_the_suburb_speak_lan_with_every_sent(from_d, to_d,
     curr = from_da
     i = 0
     curr = datetime.datetime.strftime(curr,'%Y-%m-%d')
-    result = cal_total_tweets_in_the_suburb_speak_lan_with_every_sent(curr, curr,lan, suburb, sent)
+    result = cal_total_tweets_in_the_suburb_speak_lan_with_every_sent(curr, curr,lan, suburbs, sent)
+    #print(result)
     while from_da <= to_da:
         curr = from_da
         curr = datetime.datetime.strftime(curr,'%Y-%m-%d')
-        cur_date_por_dict = cal_total_tweets_in_the_suburb_speak_lan_with_every_sent(curr, curr,lan, suburb, sent)
-#        print(cur_date_por_dict)
+        cur_date_por_dict = cal_total_tweets_in_the_suburb_speak_lan_with_every_sent(curr, curr,lan, suburbs, sent)
         for suburb in cur_date_por_dict:
             for sen in cur_date_por_dict[suburb]:
                 por = cur_date_por_dict[suburb][sen]
                 keys = ("date", "value")
                 date_value_dict = dict.fromkeys(keys)
                 date_str = from_da.strftime('%Y-%m-%d')
-                #print("curr time is "+ str(date_str))
                 date_value_dict["date"] = date_str
                 date_value_dict["value"] =por
                 if i == 0:
@@ -260,8 +266,6 @@ def cal_specific_day_in_the_suburb_speak_lan_with_every_sent(from_d, to_d,
                     result[suburb][sen] = new_sen_list
                     #print(result[suburb][sen])
                 else:
-                    #print(date_value_dict)
-                    #print("now is+ "+ str(result[suburb][sen]))
                     result[suburb][sen].append(date_value_dict)
         i+=1
         from_da = from_da + timedelta(days=1)
