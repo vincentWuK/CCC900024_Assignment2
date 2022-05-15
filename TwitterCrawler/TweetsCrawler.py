@@ -50,7 +50,8 @@ class TweetsCrawler:
         f = open(self.keywords_path)
         wordlist = f.readlines()
         for index, word in enumerate(wordlist):
-            wordlist[index] = word[:-1]
+            if "\n" in word:
+                wordlist[index] = word[:-1]
         return wordlist
 
     def HasKeywords(self, wordlist, text):
@@ -250,33 +251,39 @@ class TweetsCrawler:
             else:
                 query = "\"" + word + "\""
             if len(query) > 200:
-                query = query + " place:" + self.suburb
+                query = query + " place:" + self.location_name
                 querylst.append(query)
                 query = ""
-        for q in querylst:
-            for i in range(2):  # search 200 tweets
+        if query:
+            querylst.append(query + " place:" + self.location_name)
+        print(querylst)
+        for index, q in enumerate(querylst):
+            for i in range(1):  # search 100 tweets
                 try:
                     lst = api.search_30_day(label="development",
-                                            query=q,
-                                            maxResults=100)
+                                                  query=q,
+                                                  maxResults=100,
+                                                  fromDate="202205010000",
+                                                  toDate="202205140800")
                 except BaseException as e:
                     print("cannot search 30 days tweets: ", e)
                 for tweet in lst:
                     try:
+                        print(tweet)
                         text = jionlp.clean_text(tweet.text)
                         sentiment = self.analysis(text)
                         lang = Language.make(
                             language=tweet.lang).display_name()
                         try:
                             db.save({
-                                '_id': str(tweet.id_str),
-                                'lang': lang,
-                                'suburb': self.suburb,
-                                'sentiment': sentiment,
-                                'created_at': str(tweet.created_at),
-                                "text": tweet.text
-                            })
+                            '_id': str(tweet.id),
+                            'city': self.location_name,
+                            'sentiment': sentiment,
+                            'created_at': str(tweet.created_at),
+                            'text': tweet.text
+                        })
                         except BaseException as e:
+                            # print(e)
                             pass
                     except BaseException as e:
                         print(e)
