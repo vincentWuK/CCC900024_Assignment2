@@ -173,7 +173,7 @@ function T2_GA() {
                 </Menu.Item>
                 <Menu.Item>
                   <Button type="link" style={{ marginLeft: "-10px" }} onClick={() => { navigate('/T2o') }}>
-                    Topic 2 Graph Analysis
+                    Topic 2 Unemployment Overview
                   </Button>
                 </Menu.Item>
               </Menu.ItemGroup>
